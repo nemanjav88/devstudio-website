@@ -138,6 +138,7 @@ body { margin: 0; background: var(--ink); }
 .final-cta .button { min-width: 240px; }
 .final-cta { padding-bottom: 0; }
 .cta-rule { margin-top: 90px; border-bottom: 1px solid var(--line); }
+.cta-media { display: block; width: min(420px, 80%); max-height: 140px; object-fit: cover; margin: 55px 0 0 auto; opacity: .75; }
 .site-footer { display: flex; padding: 35px 4.5% 45px; align-items: center; justify-content: space-between; gap: 35px; }
 .site-footer p { font-size: 11px; line-height: 1.8; }
 .site-footer p > span,.site-footer > .meta { color: #a9aca1; }
@@ -152,6 +153,7 @@ body { margin: 0; background: var(--ink); }
 /* Local abstract form studies: no external stock assets or product claims. */
 .visual { height: 100%; width: 100%; position: relative; isolation: isolate; overflow: hidden; background: #23251f; }
 .visual-grid { position: absolute; inset: 0; background-image: linear-gradient(#ffffff04 1px,transparent 1px),linear-gradient(90deg,#ffffff04 1px,transparent 1px); background-size: 55px 55px; mask-image: linear-gradient(transparent,#000); }
+.visual-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .9; filter: saturate(.75) contrast(1.05); z-index: 0; }
 .visual-caption { position: absolute; bottom: 18px; left: 20px; font: 8px monospace; letter-spacing: .14em; color: #b7bbac; z-index: 5; }
 .crosshair { position: absolute; top: 20px; right: 20px; font: 18px monospace; color: #ffffff60; }
 .visual--hero { position: absolute; width: 61%; right: -5%; top: 0; bottom: 0; height: auto; background: radial-gradient(ellipse at 60% 50%,#34382a 0%,#151710 48%,#111210 75%); overflow: visible; }
