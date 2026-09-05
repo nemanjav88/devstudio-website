@@ -1,8 +1,5 @@
+import { HomePrototype } from '@/components/home/HomePrototype'
+
 export default function HomePage() {
-  return (
-    <main>
-      <h1>Dev Studio</h1>
-      <p>Website under development.</p>
-    </main>
-  )
+  return <HomePrototype />
 }

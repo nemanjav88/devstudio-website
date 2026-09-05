@@ -1,6 +1,12 @@
 # Dev Studio website foundation
 
-Read [PROJECT_BRIEF.md](PROJECT_BRIEF.md) before making product or design decisions. This setup provides Next.js, TypeScript, Payload CMS, PostgreSQL, and Tailwind CSS in one application. The core CMS content model supports BHS and English. The public page is still a placeholder; visual design, frontend localization, and animations are future work.
+Read [PROJECT_BRIEF.md](PROJECT_BRIEF.md) before making product or design decisions. This setup provides Next.js, TypeScript, Payload CMS, PostgreSQL, and Tailwind CSS in one application. The core CMS content model supports BHS and English. The homepage is an English visual prototype using local content; frontend localization and CMS content integration are future work.
+
+## Homepage prototype
+
+`src/components/home/HomePrototype.tsx` contains all ten homepage sections, navigation, project and Story previews, Resources information, and the project-enquiry preview. `src/app/(frontend)/globals.css` provides the responsive design and locally rendered abstract industrial form studies. These are visual placeholders, not photographs or final product representations; no clients, results, or metrics are invented.
+
+GSAP animates the hero and scroll-driven process with cleanup and a reduced-motion fallback. Native anchors and dialogs provide keyboard-accessible navigation and previews. Project CTAs open an informational panel linking to the current official website; no enquiry data is collected or submitted. The homepage does not query Payload. CMS routes and styles remain separate, and no CMS schema changes are included. The temporary wordmarks and visual studies should be replaced with approved branding and photography during final content implementation.
 
 ## Local setup
 
