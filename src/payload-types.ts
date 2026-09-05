@@ -102,8 +102,14 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('bhs' | 'en') | ('bhs' | 'en')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+    homepage: Homepage;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
+  };
   locale: 'bhs' | 'en';
   widgets: {
     collections: CollectionsWidget;
@@ -704,6 +710,269 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  companyName: string;
+  navigation: {
+    solutions: string;
+    projects: string;
+    capabilities: string;
+    about: string;
+    stories: string;
+    resources: string;
+    contact: string;
+    startAProject: string;
+  };
+  contactEmail: string;
+  phone?: string | null;
+  location?: string | null;
+  socialLinks?:
+    | {
+        platform: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  seo: {
+    title: string;
+    description: string;
+    shareImage?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  hero?: {
+    eyebrow?: string | null;
+    headline?: string | null;
+    supportingLine?: string | null;
+    subtext?: string | null;
+    primaryCtaLabel?: string | null;
+    secondaryCtaLabel?: string | null;
+    heroMedia?: (number | null) | Media;
+    /**
+     * Choose an uploaded video or provide an external video URL.
+     */
+    video?: {
+      file?: (number | null) | Media;
+      url?: string | null;
+      poster?: (number | null) | Media;
+      caption?: string | null;
+    };
+  };
+  positioning?: {
+    headline?: string | null;
+    supportingText?: string | null;
+  };
+  selectedWork?: {
+    headline?: string | null;
+    intro?: string | null;
+    projects?: (number | Project)[] | null;
+  };
+  whatWeBuild?: {
+    headline?: string | null;
+    categories?:
+      | {
+          name?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  process?: {
+    opening?: string | null;
+    headline?: string | null;
+    steps?:
+      | {
+          number: string;
+          title: string;
+          description?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    closing?: string | null;
+  };
+  whyDevStudio?: {
+    headline?: string | null;
+    body?: string | null;
+  };
+  madeHere?: {
+    headline?: string | null;
+    body?: string | null;
+    location?: string | null;
+    media?: (number | null) | Media;
+  };
+  ownProducts?: {
+    headline?: string | null;
+    body?: string | null;
+    products?: (number | Project)[] | null;
+    media?: (number | null) | Media;
+  };
+  latestFromTheStudio?: {
+    headline?: string | null;
+    intro?: string | null;
+    stories?: (number | Story)[] | null;
+  };
+  finalCta?: {
+    headline?: string | null;
+    body?: string | null;
+    buttonLabel?: string | null;
+    media?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  companyName?: T;
+  navigation?:
+    | T
+    | {
+        solutions?: T;
+        projects?: T;
+        capabilities?: T;
+        about?: T;
+        stories?: T;
+        resources?: T;
+        contact?: T;
+        startAProject?: T;
+      };
+  contactEmail?: T;
+  phone?: T;
+  location?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        shareImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        headline?: T;
+        supportingLine?: T;
+        subtext?: T;
+        primaryCtaLabel?: T;
+        secondaryCtaLabel?: T;
+        heroMedia?: T;
+        video?:
+          | T
+          | {
+              file?: T;
+              url?: T;
+              poster?: T;
+              caption?: T;
+            };
+      };
+  positioning?:
+    | T
+    | {
+        headline?: T;
+        supportingText?: T;
+      };
+  selectedWork?:
+    | T
+    | {
+        headline?: T;
+        intro?: T;
+        projects?: T;
+      };
+  whatWeBuild?:
+    | T
+    | {
+        headline?: T;
+        categories?:
+          | T
+          | {
+              name?: T;
+              id?: T;
+            };
+      };
+  process?:
+    | T
+    | {
+        opening?: T;
+        headline?: T;
+        steps?:
+          | T
+          | {
+              number?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+        closing?: T;
+      };
+  whyDevStudio?:
+    | T
+    | {
+        headline?: T;
+        body?: T;
+      };
+  madeHere?:
+    | T
+    | {
+        headline?: T;
+        body?: T;
+        location?: T;
+        media?: T;
+      };
+  ownProducts?:
+    | T
+    | {
+        headline?: T;
+        body?: T;
+        products?: T;
+        media?: T;
+      };
+  latestFromTheStudio?:
+    | T
+    | {
+        headline?: T;
+        intro?: T;
+        stories?: T;
+      };
+  finalCta?:
+    | T
+    | {
+        headline?: T;
+        body?: T;
+        buttonLabel?: T;
+        media?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
