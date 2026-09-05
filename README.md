@@ -1,6 +1,6 @@
 # Dev Studio website foundation
 
-Read [PROJECT_BRIEF.md](PROJECT_BRIEF.md) before making product or design decisions. This setup provides Next.js, TypeScript, Payload CMS, PostgreSQL, and Tailwind CSS in one application. The public page is only a placeholder; visual design, content collections, localization, and animations are future work.
+Read [PROJECT_BRIEF.md](PROJECT_BRIEF.md) before making product or design decisions. This setup provides Next.js, TypeScript, Payload CMS, PostgreSQL, and Tailwind CSS in one application. The core CMS content model supports BHS and English. The public page is still a placeholder; visual design, frontend localization, and animations are future work.
 
 ## Local setup
 
@@ -20,7 +20,29 @@ Environment files are ignored by Git except `.env.example`. Never put real crede
 - `src/payload.config.ts`: shared CMS configuration, PostgreSQL adapter, and environment validation.
 - `src/collections/Users.ts`: authenticated CMS administrators. All accounts have admin privileges at this stage; public user registration is denied after first-user setup.
 - `src/payload-types.ts`: generated CMS TypeScript types.
-- `src/migrations`: future PostgreSQL migrations.
+- `src/collections`: Users plus Projects, Stories, Solutions, Downloads, Clients, and Media.
+- `src/access/content.ts`: authenticated writes, public asset reads, and published-only editorial reads.
+- `src/fields/content.ts`: reusable content fields and slug, URL, and year validation.
+- `src/migrations`: generated initial and core-content PostgreSQL migrations and schema snapshots.
+
+## Core CMS content model
+
+| Collection | Content |
+| --- | --- |
+| Projects | Localized title, slug, industry, services, short description and rich content; client, year, technologies, gallery, uploaded/external video, related solution, downloads, featured flag, and draft/published status. |
+| Stories | Localized title, slug, excerpt and rich content; six story types, cover image, gallery, uploaded/external video, related projects and solutions, downloads, featured flag, and draft/published status. |
+| Solutions | Localized title, slug, short description and rich content; five solution groups, image/video hero, gallery, reverse project/story relationships, downloads, and draft/published status. |
+| Downloads | PDF upload with localized title, category (catalog, product/flyer, thematic brochure), file language, thumbnail, year, related solution, and featured flag. Create one record per file language. |
+| Clients | Name, image logo, HTTP(S) website, localized industry, and featured flag. |
+| Media | JPEG, PNG, WebP, AVIF, GIF, MP4, WebM, or QuickTime upload with localized accessible description and caption. |
+
+Content locales are `bhs` (default) and `en`, with automatic fallback disabled. Titles, slugs, editorial text, and captions are translated; identifiers, technical facts, and relationships are shared. Slugs are entered explicitly and must be unique per collection/locale. CMS content localization does not yet create localized frontend routes.
+
+Projects, Stories, and Solutions use Payload drafts and retain up to 50 versions per document. Publication status is shared across languages; independent per-language publishing is not enabled. Review translations before publishing. Anonymous API reads are restricted to published editorial records, and version history and all writes require an authenticated administrator. Payload Local API calls bypass access by default; use `overrideAccess: false` when serving public content.
+
+Solutions' related projects and stories are reverse joins: edit `Projects.relatedSolution` or `Stories.relatedSolutions` to maintain those links. Other relationships are explicitly curated. Media selectors restrict image-only uses such as logos and galleries; video fields support a media upload and/or an HTTP(S) URL.
+
+Lexical provides rich-text editing. Sharp handles image processing. Uploaded files live in ignored `media/assets` and `media/downloads` folders. Mount the repository's `media` directory on persistent storage when deploying and include it in backups. Media and Downloads are public assets without drafts; do not upload confidential files. No sample content is seeded.
 
 ## Commands
 
@@ -36,7 +58,7 @@ Environment files are ignored by Git except `.env.example`. Never put real crede
 | `npm run migrate:create` | Create a database migration for review. |
 | `npm run migrate` | Apply pending migrations. |
 
-Payload's PostgreSQL adapter uses schema push in development. Use a dedicated development database, not production. Before the first deployment, create and review an initial migration, and apply migrations as part of the release process. Do not mix development schema push with production migration history.
+Payload's PostgreSQL adapter uses schema push in development. Use a dedicated development database, not production. The initial and core-content migrations are generated but have not been applied here. Review and apply migrations as part of the release process. Do not mix development schema push with production migration history.
 
 ## Hosting preparation
 
@@ -46,7 +68,9 @@ Next.js standalone output is enabled for future self-hosting through Coolify. No
 
 The initial setup passed Payload type generation, admin import-map generation, ESLint, TypeScript checking, and the Next.js production build. The build was checked with a temporary process-only secret and a dummy database URL; no real credentials were written to disk. PostgreSQL was not available locally, so database connectivity, schema creation, and the first-admin/login flow still require a real database and environment values.
 
-The installation audit reports 12 dependency findings (1 low, 11 moderate; no high or critical). They involve Payload account-unlock access, DOMPurify through Monaco, and an older esbuild through Drizzle tooling. A non-breaking `npm audit fix` did not clear them. Recheck upstream fixes before deployment; do not use the suggested force fix, which downgrades the PostgreSQL adapter incompatibly. This foundation has only trusted administrator accounts and explicitly defines unlock access.
+After adding Lexical and Sharp, installation reports 13 dependency findings (1 low, 12 moderate; no high or critical). The existing findings involve Payload account-unlock access, DOMPurify through Monaco, and an older esbuild through Drizzle tooling. A non-breaking `npm audit fix` during foundation setup did not clear them. Recheck upstream fixes before deployment; do not use the suggested force fix, which downgrades the PostgreSQL adapter incompatibly. This foundation has only trusted administrator accounts and explicitly defines unlock access.
+
+Core content validation passed type generation, import-map generation, migration generation, TypeScript, and the production build. Lint has no errors and eight unused-parameter warnings in CLI-generated migrations. Payload also warns that no email adapter is configured. Live database migration, CRUD, upload, and publishing checks require a running PostgreSQL database and have not been performed here.
 
 ESLint 9 is pinned because plugins in the current Next.js ESLint configuration do not yet declare ESLint 10 compatibility. npm reports its deprecation, plus deprecated transitive esbuild-kit packages and pending optional install-script approvals. The listed code-generation and build checks succeed without approving those scripts.
 

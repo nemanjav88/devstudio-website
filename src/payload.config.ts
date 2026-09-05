@@ -2,8 +2,16 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { buildConfig } from 'payload'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import sharp from 'sharp'
 
 import { Users } from './collections/Users'
+import { Projects } from './collections/Projects'
+import { Stories } from './collections/Stories'
+import { Solutions } from './collections/Solutions'
+import { Downloads } from './collections/Downloads'
+import { Clients } from './collections/Clients'
+import { Media } from './collections/Media'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -20,7 +28,14 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: dirname },
   },
-  collections: [Users],
+  collections: [Users, Projects, Stories, Solutions, Downloads, Clients, Media],
+  editor: lexicalEditor(),
+  sharp,
+  localization: {
+    locales: [{ label: 'BHS', code: 'bhs' }, { label: 'English', code: 'en' }],
+    defaultLocale: 'bhs',
+    fallback: false,
+  },
   secret: requiredEnv('PAYLOAD_SECRET'),
   db: postgresAdapter({
     pool: { connectionString: requiredEnv('DATABASE_URL') },
