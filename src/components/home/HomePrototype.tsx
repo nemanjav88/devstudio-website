@@ -43,6 +43,7 @@ export function HomePrototype() {
   const dialog = useRef<HTMLDialogElement>(null)
   const [panel, setPanel] = useState({ title: '', text: '', kind: '' })
   const [menu, setMenu] = useState(false)
+  const [headerScrolled, setHeaderScrolled] = useState(false)
   const menuButton = useRef<HTMLButtonElement>(null)
 
   function openPanel(title: string, text: string, kind = '') {
@@ -50,6 +51,13 @@ export function HomePrototype() {
     setMenu(false)
     dialog.current?.showModal()
   }
+
+  useEffect(() => {
+    const updateHeader = () => setHeaderScrolled(window.scrollY > Math.max(420, window.innerHeight * 0.55))
+    updateHeader()
+    window.addEventListener('scroll', updateHeader, { passive: true })
+    return () => window.removeEventListener('scroll', updateHeader)
+  }, [])
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -79,7 +87,7 @@ export function HomePrototype() {
 
   return <div className="studio-home" ref={root}>
     <a className="skip-link" href="#main">Skip to content</a>
-    <header className="site-header">
+    <header className={headerScrolled ? 'site-header is-scrolled' : 'site-header'}>
       <a className="wordmark" href="#" aria-label="Dev Studio home">dev<span className="logo-symbol">✳</span><small>STUDIO</small></a>
       <button className="menu-toggle" ref={menuButton} aria-expanded={menu} aria-controls="main-navigation" onClick={() => setMenu(!menu)}>{menu ? 'CLOSE −' : 'MENU +'}</button>
       <nav id="main-navigation" aria-label="Main navigation" className={menu ? 'navigation is-open' : 'navigation'}>
