@@ -30,8 +30,11 @@ for (const [path, language] of [['/', 'bs'], ['/en', 'en']]) {
     assert.match(navigation, /href="\/"/)
     const activeLanguageLink = navigation.match(/<a\b[^>]*aria-current="true"[^>]*>(BHS|EN)<\/a>/)?.[1]
     assert.equal(activeLanguageLink, language === 'bs' ? 'BHS' : 'EN')
-    for (const anchor of ['solutions', 'projects', 'process', 'about', 'stories']) {
+    for (const anchor of ['process', 'about']) {
       assert.ok(navigation.includes(`href="${path === '/' ? '/' : '/en'}#${anchor}"`))
+    }
+    for (const section of ['projects', 'solutions', 'stories', 'resources']) {
+      assert.ok(navigation.includes(`href="${path === '/' ? '' : '/en'}/${section}"`))
     }
     assert.ok(!html.includes('Set DATABASE_URL'), 'Missing CMS configuration must fall back safely')
     console.log(`PASS ${path} (${language}), Accept-Language: ${acceptLanguage || '(empty)'}`)

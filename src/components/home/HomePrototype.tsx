@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { LanguageSwitcher } from '@/components/frontend/LanguageSwitcher'
+import { SiteHeader } from '@/components/frontend/SiteHeader'
+import { SiteFooter } from '@/components/frontend/SiteFooter'
 import { localizedHref } from '@/lib/i18n'
 import { homeText } from '@/lib/home-copy'
 import type { HomeCmsData } from '@/lib/homepage-types'
@@ -46,8 +47,6 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
   const root = useRef<HTMLDivElement>(null)
   const dialog = useRef<HTMLDialogElement>(null)
   const [panel, setPanel] = useState({ title: '', text: '', kind: '' })
-  const [menu, setMenu] = useState(false)
-  const menuButton = useRef<HTMLButtonElement>(null)
   const locale = cms.locale
   const t = (text: string) => homeText(locale, text)
   const work = baseWork.map(item => ({ ...item, title: t(item.title), label: t(item.label), text: t(item.text) }))
@@ -55,14 +54,6 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
   const stories = baseStories.map(([type, title, kind]) => [t(type), t(title), kind])
   const home = cms.homepage
   const settings = cms?.settings
-  const navLabels = settings?.navigation
-  const navItems = [
-    [navLabels?.solutions || t("Solutions"), '#solutions'],
-    [navLabels?.projects || t("Projects"), '#projects'],
-    [navLabels?.capabilities || t("Capabilities"), '#process'],
-    [navLabels?.about || t("About"), '#about'],
-    [navLabels?.stories || t("Stories"), '#stories'],
-  ]
   const workItems = home?.selectedWork?.projects?.length
     ? home.selectedWork.projects.slice(0, 4).map((project, index) => ({
       title: projectTitle(project) || work[index].title,
@@ -88,7 +79,6 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
 
   function openPanel(title: string, text: string, kind = '') {
     setPanel({ title, text, kind })
-    setMenu(false)
     dialog.current?.showModal()
   }
 
@@ -106,30 +96,12 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
     return () => mm.revert()
   }, [])
 
-  useEffect(() => {
-    if (!menu) return
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') { setMenu(false); menuButton.current?.focus() }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [menu])
 
   const contact = () => openPanel(t("Let’s start with your idea."), settings?.contactEmail ? (locale === 'bhs' ? `Pošaljite projektni upit na ${settings.contactEmail}${settings.phone ? ` ili pozovite ${settings.phone}` : ''}. Cijeli obrazac stiže uskoro; ovaj prototip ne prikuplja niti šalje podatke.` : `Send your project enquiry to ${settings.contactEmail}${settings.phone ? ` or call ${settings.phone}` : ''}. The full form is coming next; this prototype does not collect or send information.`) : t("The project enquiry form is coming next. This design prototype does not collect or send information. Visit the current Dev Studio website to get in touch."), 'contact')
-  const resources = () => openPanel(t("The details. All in one place."), t("The Dev Studio catalog, product flyers and thematic brochures will be available here in BHS and English. Download files have not been added to this prototype."))
 
   return <div className="studio-home" ref={root}>
     <a className="skip-link" href="#main">{t("Skip to content")}</a>
-    <header className="site-header">
-      <a className="wordmark" href={localizedHref('/#', locale)} aria-label={t("Dev Studio home")}>dev<span className="logo-symbol">✳</span><small>STUDIO</small></a>
-      <button className="menu-toggle" ref={menuButton} aria-expanded={menu} aria-controls="main-navigation" onClick={() => setMenu(!menu)}>{menu ? t("CLOSE −") : t("MENU +")}</button>
-      <nav id="main-navigation" aria-label={t("Main navigation")} className={menu ? 'navigation is-open' : 'navigation'}>
-        {navItems.map(([label, href]) => <a key={label} href={localizedHref(`/${href}`, locale)} onClick={() => setMenu(false)}>{label}</a>)}
-        <button onClick={resources}>{navLabels?.resources || t("Resources")}</button><button onClick={contact}>{navLabels?.contact || t("Contact")}</button>
-        <button className="header-cta" onClick={contact}>{navLabels?.startAProject || t("START A PROJECT")} <Arrow /></button>
-        <LanguageSwitcher locale={locale} onNavigate={() => setMenu(false)} />
-      </nav>
-    </header>
+    <SiteHeader locale={locale} settings={settings} onContact={contact} />
     <main id="main">
       <section className="hero section-dark" aria-labelledby="hero-title">
         <div className="hero-top meta"><span><i className="status-dot" />  {t("INDEPENDENT THINKING. INTEGRATED MAKING.")}</span><span>BANJA LUKA · BA</span></div>
@@ -168,7 +140,7 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
       <section className="stories-section section-light section-pad" id="stories"><div className="section-label"><span>{t("08 / LATEST FROM THE STUDIO")}</span><span>{t("WORK IN PROGRESS. THINKING IN MOTION.")}</span></div><div className="section-heading"><h2>{home?.latestFromTheStudio?.headline || <>{t("INSIDE")}<br />{t("THE MAKING.")}</>}</h2><span className="meta muted">{home?.latestFromTheStudio?.intro || t("EDITORIAL PREVIEWS / STORIES COMING SOON")}</span></div><div className="stories-grid">{storyItems.map(([type, title, kind]) => <button className="story" key={title} onClick={() => openPanel(title, (locale === 'bhs' ? `Najava buduće priče iz kategorije ${type.toLowerCase()}. Urednički sadržaj biće dodan kroz CMS.` : `A placeholder for a future ${type.toLowerCase()} story. Editorial content will be added when the homepage is connected to the CMS.`), kind)}><div className="story-image"><Visual kind={kind} /></div><p className="meta">{type.toUpperCase()} <span>{t("PREVIEW")}</span></p><h3>{title}<Arrow /></h3></button>)}</div></section>
       <section className="final-cta section-dark section-pad" id="contact"><div className="section-label"><span>{t("THE NEXT THING WE BUILD COULD BE YOURS.")}</span><span>{t("LET’S TALK.")}</span></div><h2>{home?.finalCta?.headline || <>{t("GOT AN IDEA?")}<br /><em>{t("LET’S BUILD IT.")}</em></>}</h2><button className="button button-yellow" onClick={contact}>{home?.finalCta?.buttonLabel || t("START A PROJECT")} <Arrow /></button>{finalCtaMedia && <img className="cta-media" src={finalCtaMedia} alt="" />}<div className="cta-rule" /></section>
     </main>
-    <footer className="site-footer section-dark"><a className="wordmark" href={localizedHref('#', locale)} aria-label={t("Dev Studio back to top")}>dev<span className="logo-symbol">✳</span><small>STUDIO</small></a><p>{t("FROM IDEA TO REALITY.")}<br /><span>{t("Banja Luka, Bosnia & Herzegovina")}</span></p><span className="meta">© {new Date().getFullYear()} DEV STUDIO</span><a className="text-link" href={localizedHref('#', locale)}>{t("BACK TO TOP ↑")}</a></footer>
+    <SiteFooter locale={locale} settings={settings} />
     <dialog ref={dialog} className="prototype-dialog" aria-labelledby="dialog-title" onClick={event => { if (event.target === event.currentTarget) dialog.current?.close() }}><div className="dialog-content"><button className="dialog-close" onClick={() => dialog.current?.close()} aria-label={t("Close panel")}>{t("CLOSE ×")}</button><p className="eyebrow">{t("DEV STUDIO / DESIGN PREVIEW")}</p><h2 id="dialog-title">{panel.title}</h2>{panel.kind && panel.kind !== 'contact' && <Visual kind={panel.kind} />}<p>{panel.text}</p>{panel.kind === 'contact' && <a className="button button-yellow" href="https://devstudio.biz">{t("Visit the current website")} <Arrow /></a>}</div></dialog>
   </div>
 }
