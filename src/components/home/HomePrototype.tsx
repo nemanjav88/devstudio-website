@@ -101,7 +101,7 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
 
   return <div className="studio-home" ref={root}>
     <a className="skip-link" href="#main">{t("Skip to content")}</a>
-    <SiteHeader locale={locale} settings={settings} onContact={contact} />
+    <SiteHeader locale={locale} settings={settings} />
     <main id="main">
       <section className="hero section-dark" aria-labelledby="hero-title">
         <div className="hero-top meta"><span><i className="status-dot" />  {t("INDEPENDENT THINKING. INTEGRATED MAKING.")}</span><span>BANJA LUKA · BA</span></div>

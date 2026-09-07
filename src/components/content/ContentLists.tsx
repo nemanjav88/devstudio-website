@@ -52,7 +52,7 @@ export function EmptyState({ locale, unavailable = false, resources = false }: {
     <span className="empty-symbol" aria-hidden="true">✳</span><div>
       <h2>{unavailable ? labels.unavailable : resources ? labels.noFiles : labels.empty}</h2>
       <p>{unavailable ? labels.unavailableBody : resources ? labels.noFilesBody : labels.emptyBody}</p>
-      <a className="text-link" href={localizedHref('/#about', locale)}>{labels.browse} Dev Studio <span aria-hidden="true">↗</span></a>
+      <a className="text-link" href={localizedHref('/about', locale)}>{labels.browse} Dev Studio <span aria-hidden="true">↗</span></a>
     </div>
   </div>
 }

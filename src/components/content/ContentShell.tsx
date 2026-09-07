@@ -14,7 +14,7 @@ export async function ContentShell({ locale, translatedPaths, children }: { loca
     <main id="main">{children}</main>
     <section className="content-invitation content-pad">
       <p className="eyebrow">{homeText(locale, 'FROM IDEA TO REALITY.')}</p>
-      <a href={localizedHref('/#contact', locale)}>{ui(locale).contact}<span aria-hidden="true">↗</span></a>
+      <a href={localizedHref('/contact', locale)}>{ui(locale).contact}<span aria-hidden="true">↗</span></a>
     </section>
     <SiteFooter locale={locale} settings={settings} />
   </div>
