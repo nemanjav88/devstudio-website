@@ -1,12 +1,35 @@
 # Dev Studio website foundation
 
-Read [PROJECT_BRIEF.md](PROJECT_BRIEF.md) before making product or design decisions. This setup provides Next.js, TypeScript, Payload CMS, PostgreSQL, and Tailwind CSS in one application. The core CMS content model supports BHS and English. The homepage is an English visual prototype using local content; frontend localization and CMS content integration are future work.
+Read [PROJECT_BRIEF.md](PROJECT_BRIEF.md) before making product or design decisions. This setup provides Next.js, TypeScript, Payload CMS, PostgreSQL, and Tailwind CSS in one application. The homepage fetches localized Payload content with local prototype fallbacks. BHS is served at `/` and English at `/en`; the URL alone selects the frontend locale.
 
 ## Homepage prototype
 
 `src/components/home/HomePrototype.tsx` contains all ten homepage sections, navigation, project and Story previews, Resources information, and the project-enquiry preview. `src/app/(frontend)/globals.css` provides the responsive design and locally rendered abstract industrial form studies. These are visual placeholders, not photographs or final product representations; no clients, results, or metrics are invented.
 
-GSAP animates the hero and scroll-driven process with cleanup and a reduced-motion fallback. Native anchors and dialogs provide keyboard-accessible navigation and previews. Project CTAs open an informational panel linking to the current official website; no enquiry data is collected or submitted. The homepage does not query Payload. CMS routes and styles remain separate, and no CMS schema changes are included. The temporary wordmarks and visual studies should be replaced with approved branding and photography during final content implementation.
+GSAP animates the hero and scroll-driven process with cleanup and a reduced-motion fallback. Native anchors and dialogs provide keyboard-accessible navigation and previews. Project CTAs open an informational panel in the current language linking to the current official website; no enquiry data is collected or submitted. The homepage queries the Homepage and Site Settings globals with its route locale. CMS routes and styles remain separate. The temporary wordmarks and visual studies should be replaced with approved branding and photography during final content implementation.
+
+## Frontend language routing
+
+| Language | Homepage | Future page examples | Payload locale | HTML / hreflang |
+| --- | --- | --- | --- | --- |
+| BHS (default) | `/` | `/projects`, `/solutions`, `/stories`, `/resources` | `bhs` | `bs` |
+| English | `/en` | `/en/projects`, `/en/solutions`, `/en/stories`, `/en/resources` | `en` | `en` |
+
+There is no browser-language detection, locale cookie, middleware rewrite, or automatic language redirect. `src/app/(frontend)/(bhs)/layout.tsx` and `src/app/(frontend)/en/layout.tsx` share `FrontendLayout` and render the correct HTML language on the server. Switching languages performs a document navigation between these root layouts. Payload's separate `(payload)` route group, `/admin`, and `/api` remain unchanged.
+
+The discreet BHS / EN control is inside the existing navigation on desktop and in the expanded mobile menu. It marks the active language, supports keyboard and native link navigation, and switches the current path while preserving the query and hash on activation. Existing homepage section links target the localized homepage; CTA buttons keep their current dialog behavior and do not navigate out of the selected language.
+
+For future pages, add thin route entry points under `(frontend)/(bhs)/projects/...` and `(frontend)/en/projects/...` (and the equivalent Solutions, Stories, and Resources directories), sharing the page implementation and passing the explicit locale, as the homepages do. Use `localizedHref('/projects/example', locale)` from `src/lib/i18n.ts` for root-relative frontend links. It handles existing `/en` prefixes and leaves Payload, assets, external links, and same-page anchors alone. `localeFromPath` recognizes only a complete `/en` segment. Future page templates must pass the same locale to their CMS reads and shared navigation.
+
+The language switcher preserves the same slug by default. Since Payload slugs are localized, future detail pages should resolve both translations by document ID and pass `translatedPaths` to `LanguageSwitcher` and `languageAlternates`. If a translation does not exist, supply that language's collection index as the destination. The future collection/detail pages themselves are not implemented yet.
+
+Both globals use `fallbackLocale: false` and `overrideAccess: false`, so public rendering respects access control, including populated editorial relationships. Missing configuration, unavailable globals, and untranslated fields use safe local fallbacks for the requested language. Failures are isolated per global. React request caching deduplicates metadata and page reads per locale; dynamic homepage rendering prevents build-time fallbacks from becoming permanently cached content. `src/lib/home-copy.ts` contains BHS translations of the existing English prototype fallback copy; CMS values take precedence.
+
+Homepage metadata uses localized Site Settings SEO values when present, a self-canonical URL, and reciprocal `bs`, `en`, and `x-default` alternates (`x-default` is BHS). Future pages can reuse `languageAlternates` with their own paths. `NEXT_PUBLIC_SITE_URL` defines the public metadata origin and defaults to `https://new.devstudio.biz`. Every frontend locale retains `noindex, nofollow` regardless of the origin; changing the origin does not enable indexing.
+
+Run the routing regression checks with `node --experimental-strip-types --test tests/i18n.test.mjs` (Node.js 22.6+), followed by `npm run typecheck`, `npm run lint`, and `npm run build`. With a local production server running, use `node tests/http-smoke.mjs http://127.0.0.1:3100` to verify `/` and `/en` against conflicting `Accept-Language` headers and locale query parameters, including HTML language, server-rendered navigation, canonical URLs, alternates, and noindex. Neither route should redirect or change language. Check the switcher on desktop and in the mobile menu, section anchors, and CTA dialogs. Database-backed translated content requires the local Payload environment described below.
+
+Localization validation passed TypeScript, the standard Turbopack production build, five routing regression tests, and all eight production HTTP smoke cases with CMS configuration absent. ESLint passes with 14 existing warnings (prototype image elements and generated migration parameters). Live translated CMS reads and browser visual/interaction checks remain unverified in the local environment used for this change.
 
 ## Local setup
 
@@ -15,13 +38,13 @@ GSAP animates the hero and scroll-driven process with cleanup and a reduced-moti
 3. Provide a running PostgreSQL database dedicated to this application.
 4. Copy `.env.example` to `.env` and replace both placeholders. Use a strong random `PAYLOAD_SECRET` of at least 32 characters and a valid `DATABASE_URL`. Generate a secret locally with `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`.
 5. Run `npm run dev`.
-6. Open `http://localhost:3000` for the placeholder and `http://localhost:3000/admin` to create the first CMS administrator.
+6. Open `http://localhost:3000` for BHS, `http://localhost:3000/en` for English, and `http://localhost:3000/admin` to create the first CMS administrator.
 
 Environment files are ignored by Git except `.env.example`. Never put real credentials in the example or in source code. Both variables are server-only and must also be provided for builds and Payload CLI commands. Missing or unchanged placeholder values cause an explicit configuration error. No database or administrator credentials are seeded.
 
 ## Structure
 
-- `src/app/(frontend)`: public App Router layout, placeholder, and Tailwind stylesheet.
+- `src/app/(frontend)`: explicit BHS and English App Router layouts and homepages, plus the shared Tailwind stylesheet.
 - `src/app/(payload)`: Payload admin UI, server functions, REST API, and GraphQL API. Payload styling is separate from the frontend Tailwind import.
 - `src/payload.config.ts`: shared CMS configuration, PostgreSQL adapter, and environment validation.
 - `src/collections/Users.ts`: authenticated CMS administrators. All accounts have admin privileges at this stage; public user registration is denied after first-user setup.
@@ -42,7 +65,7 @@ Environment files are ignored by Git except `.env.example`. Never put real crede
 | Clients | Name, image logo, HTTP(S) website, localized industry, and featured flag. |
 | Media | JPEG, PNG, WebP, AVIF, GIF, MP4, WebM, or QuickTime upload with localized accessible description and caption. |
 
-Content locales are `bhs` (default) and `en`, with automatic fallback disabled. Titles, slugs, editorial text, and captions are translated; identifiers, technical facts, and relationships are shared. Slugs are entered explicitly and must be unique per collection/locale. CMS content localization does not yet create localized frontend routes.
+Content locales are `bhs` (default) and `en`, with automatic fallback disabled. Titles, slugs, editorial text, and captions are translated; identifiers, technical facts, and relationships are shared. Slugs are entered explicitly and must be unique per collection/locale. Frontend routes select the matching CMS locale explicitly; CMS entries do not create routes automatically.
 
 Projects, Stories, and Solutions use Payload drafts and retain up to 50 versions per document. Publication status is shared across languages; independent per-language publishing is not enabled. Review translations before publishing. Anonymous API reads are restricted to published editorial records, and version history and all writes require an authenticated administrator. Payload Local API calls bypass access by default; use `overrideAccess: false` when serving public content.
 

@@ -38,6 +38,10 @@ body { margin: 0; background: var(--ink); }
 .navigation .header-cta { border: 1px solid #72756a; padding: 14px 15px; font: 10px monospace; display: flex; gap: 30px; }
 .navigation .header-cta:hover { background: var(--yellow); color: var(--ink); }
 .menu-toggle { display: none; }
+.language-switcher { display: flex; align-items: center; gap: 2px; flex-shrink: 0; padding-left: 12px; border-left: 1px solid var(--line); font: 10px/1 "Courier New", monospace; letter-spacing: .04em; }
+.language-switcher a { display: grid; place-items: center; min-width: 32px; min-height: 32px; color: #96998f; transition: color .2s, background .2s; border-radius: 3px; }
+.language-switcher a[aria-current] { color: var(--paper); background: #ffffff0b; }
+.language-switcher a:hover { color: var(--yellow); }
 .skip-link { position: fixed; top: -100px; left: 20px; padding: 15px; background: var(--yellow); color: var(--ink)!important; z-index: 100; }
 .skip-link:focus { top: 15px; }
 .hero { padding: 22px 4.5% 0; }
@@ -226,6 +230,8 @@ body { margin: 0; background: var(--ink); }
   .navigation.is-open { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
   .navigation > a,.navigation > button { text-align: left; font-size: 20px; padding: 11px 0; }
   .navigation .header-cta { margin-top: 15px; padding: 18px; font-size: 12px; }
+  .navigation .language-switcher { align-self: flex-start; border-left: 0; padding: 14px 0 0; margin-top: 18px; border-top: 1px solid var(--line); gap: 8px; }
+  .navigation .language-switcher a { min-width: 44px; min-height: 44px; font-size: 11px; }
   .hero-top > span:last-child { display: none; }
   .hero-stage { min-height: 820px; align-items: start; }
   .hero-copy { padding-top: 60px; } .hero h1 { font-size: 11vw; }

@@ -1,6 +1,7 @@
 import type { Homepage, Media, Project, SiteSetting, Story } from '../payload-types'
+import type { Locale } from './i18n'
 
-export type HomeLocale = 'bhs' | 'en'
+export type HomeLocale = Locale
 
 export type HomeCmsData = {
   locale: HomeLocale
@@ -10,6 +11,7 @@ export type HomeCmsData = {
     phone?: string | null
     location?: string | null
     navigation?: Partial<SiteSetting['navigation']>
+    seo?: Partial<SiteSetting['seo']>
   }
   homepage: Homepage
 }
