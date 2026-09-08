@@ -35,12 +35,12 @@ function Visual({ kind, hero = false, media }: { kind: string; hero?: boolean; m
   return <div className={`visual visual--${kind} ${hero ? 'visual--hero' : ''}`} aria-hidden="true">
     {media && <img className="visual-media" src={media} alt="" />}
     <div className="visual-grid" />
-    {kind === 'machine' ? <div className="assembly"><div className="axis" />{[0, 1, 2, 3].map(i => <div className={`disc disc-${i}`} key={i}><div className="disc-hole" /></div>)}<span className="measure measure-a">CONCEPT / FORM</span><span className="measure measure-b">HARDWARE / MATTER</span></div>
+    {kind === 'machine' && !hero ? <div className="assembly"><div className="axis" />{[0, 1, 2, 3].map(i => <div className={`disc disc-${i}`} key={i}><div className="disc-hole" /></div>)}<span className="measure measure-a">CONCEPT / FORM</span><span className="measure measure-b">HARDWARE / MATTER</span></div>
       : kind === 'retail' ? <div className="kiosk"><div className="kiosk-screen"><span>HELLO.</span><div className="screen-lines" /><i /><b>LET’S INTERACT ↗</b></div><div className="kiosk-foot" /></div>
       : kind === 'interactive' ? <div className="circuit"><div className="circuit-ring ring-a" /><div className="circuit-ring ring-b" /><div className="chip"><span>INPUT<br />MEETS<br /><b>OUTPUT.</b></span></div><div className="circuit-node" /></div>
       : kind === 'brand' ? <div className="monoliths"><i /><i /><i /><div className="brand-orbit" /></div>
       : <div className="play-shapes"><div className="play-arch" /><div className="play-ball" /><div className="play-cube" /><div className="play-floor" /></div>}
-    <span className="visual-caption">{hero ? 'FORM STUDY — 001' : 'ABSTRACT VISUAL STUDY'}</span><span className="crosshair">+</span>
+    {!hero && <span className="visual-caption">ABSTRACT VISUAL STUDY</span>}<span className="crosshair">+</span>
   </div>
 }
 
@@ -88,7 +88,6 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
     const mm = gsap.matchMedia()
     mm.add('(prefers-reduced-motion: no-preference)', () => {
       gsap.from('.hero-copy > *', { y: 24, opacity: 0, duration: 1, stagger: 0.12, ease: 'power3.out' })
-      gsap.to('.hero .assembly', { y: -45, rotate: 8, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1 } })
       gsap.to('.process-progress', { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.process-steps', start: 'top 60%', end: 'bottom 60%', scrub: true } })
       gsap.utils.toArray<HTMLElement>('.process-step').forEach(step => {
         ScrollTrigger.create({ trigger: step, start: 'top 65%', end: 'bottom 40%', toggleClass: 'is-active' })
