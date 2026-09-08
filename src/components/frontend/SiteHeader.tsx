@@ -7,10 +7,11 @@ import { localizedHref, type Locale } from '@/lib/i18n'
 import { homeText } from '@/lib/home-copy'
 import type { HomeCmsData } from '@/lib/homepage-types'
 
-export function SiteHeader({ locale, settings, translatedPaths }: {
-  locale: Locale; settings: HomeCmsData['settings']; translatedPaths?: Partial<Record<Locale, string>>
+export function SiteHeader({ locale, settings, translatedPaths, detail }: {
+  locale: Locale; settings: HomeCmsData['settings']; translatedPaths?: Partial<Record<Locale, string>>; detail?: boolean
 }) {
   const [menu, setMenu] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const button = useRef<HTMLButtonElement>(null)
   const pathname = usePathname()
   const t = (text: string) => homeText(locale, text)
@@ -28,7 +29,13 @@ export function SiteHeader({ locale, settings, translatedPaths }: {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [menu])
-  return <header className="site-header">
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+  return <header className={`site-header${detail ? ' site-header--detail' : ''}${scrolled ? ' is-scrolled' : ''}`}>
     <a className="wordmark" href={localizedHref('/#', locale)} aria-label={t('Dev Studio home')}>dev<span className="logo-symbol">✳</span><small>STUDIO</small></a>
     <button className="menu-toggle" ref={button} aria-expanded={menu} aria-controls="main-navigation" onClick={() => setMenu(!menu)}>{menu ? t('CLOSE −') : t('MENU +')}</button>
     <nav id="main-navigation" aria-label={t('Main navigation')} className={menu ? 'navigation is-open' : 'navigation'}>

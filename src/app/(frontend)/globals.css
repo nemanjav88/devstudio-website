@@ -29,6 +29,10 @@ body { margin: 0; background: var(--ink); }
 .site-header.is-scrolled .wordmark { font-size: 34px; }
 .site-header.is-scrolled .logo-symbol { font-size: 31px; }
 .site-header.is-scrolled .wordmark small { margin-top: 5px; }
+.site-header--detail { background: #111210d9; border-bottom-color: #ffffff1c; box-shadow: 0 12px 32px #00000018; backdrop-filter: blur(16px) saturate(115%); -webkit-backdrop-filter: blur(16px) saturate(115%); }
+.site-header--detail .navigation { color: var(--paper); }
+.site-header--detail .navigation .header-cta { border-color: #aeb2a4; }
+.site-header--detail.is-scrolled { background: #0c0d0cf2; border-bottom-color: #ffffff30; box-shadow: 0 14px 36px #00000040; }
 .wordmark { display: inline-grid; grid-template-columns: auto auto; position: relative; font-weight: 850; font-size: 43px; line-height: .7; letter-spacing: -.08em; width: 105px; }
 .wordmark small { font: 8px/1 monospace; letter-spacing: .55em; margin: 7px 0 0 3px; }
 .logo-symbol { color: var(--yellow); font-size: 40px; margin-left: 6px; }

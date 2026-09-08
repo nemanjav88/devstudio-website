@@ -65,14 +65,14 @@ export async function DetailPage({ collection, locale, slug }: { collection: Edi
   const result = await getDetail(collection, slug, locale)
   if (!result.doc) {
     if (!result.unavailable) notFound()
-    return <ContentShell locale={locale}><SectionIntro section={collection} locale={locale} /><section className="content-pad"><EmptyState locale={locale} unavailable /></section></ContentShell>
+    return <ContentShell locale={locale} detail><SectionIntro section={collection} locale={locale} /><section className="content-pad"><EmptyState locale={locale} unavailable /></section></ContentShell>
   }
   const doc = result.doc
   const related = await getRelated(collection, doc, locale)
   const media = coverMedia(doc)
   const labels = ui(locale)
   const category = collection === 'solutions' ? labels[(doc as Solution).solutionGroup] : collection === 'stories' ? labels[(doc as Story).type] : labels.project
-  return <ContentShell locale={locale} translatedPaths={result.translatedPaths}>
+  return <ContentShell locale={locale} translatedPaths={result.translatedPaths} detail>
     <article className={`content-detail content-detail--${collection}`}>
       <header className="detail-intro content-pad">
         <a className="text-link detail-back" href={localizedHref(`/${collection}`, locale)}>← {labels.back} {sectionCopy(locale, collection).label}</a>

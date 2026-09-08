@@ -6,11 +6,11 @@ import { localizedHref, type Locale } from '@/lib/i18n'
 import { homeText } from '@/lib/home-copy'
 import { ui } from '@/lib/section-copy'
 
-export async function ContentShell({ locale, translatedPaths, children }: { locale: Locale; translatedPaths?: Partial<Record<Locale, string>>; children: ReactNode }) {
+export async function ContentShell({ locale, translatedPaths, detail = false, children }: { locale: Locale; translatedPaths?: Partial<Record<Locale, string>>; detail?: boolean; children: ReactNode }) {
   const settings = await getSiteSettings(locale)
   return <div className="studio-home content-site">
     <a className="skip-link" href="#main">{homeText(locale, 'Skip to content')}</a>
-    <SiteHeader locale={locale} settings={settings} translatedPaths={translatedPaths} />
+    <SiteHeader locale={locale} settings={settings} translatedPaths={translatedPaths} detail={detail} />
     <main id="main">{children}</main>
     <section className="content-invitation content-pad">
       <p className="eyebrow">{homeText(locale, 'FROM IDEA TO REALITY.')}</p>
