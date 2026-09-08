@@ -227,6 +227,21 @@ export function guardWrite(options: ReturnType<typeof parseArgs>, manifestHash: 
   assert.equal(options.target, `${url.hostname}:${url.port || '5432'}${url.pathname}`, 'Database target must explicitly match configured host:port/database')
 }
 
+/**
+ * Load the existing TypeScript Payload config with Payload's own tsx runtime
+ * bridge. A direct native ESM import of payload.config.ts fails in deployment
+ * because its extensionless collection imports (for example ./collections/Users)
+ * cannot be resolved by Node. This is the same loading path used by Payload's
+ * CLI, and it does not initialize Payload or connect to the database.
+ */
+export async function loadPayloadConfig() {
+  const nodeModule = await import('node:module')
+  if (typeof nodeModule.default.registerHooks === 'function') (nodeModule.default as { registerHooks?: unknown }).registerHooks = undefined
+  const { tsImport } = await import('tsx/esm/api')
+  const configModule = await tsImport('./src/payload.config.ts', `${pathToFileURL(ROOT).href}/`)
+  return (configModule as { default?: unknown }).default ?? configModule
+}
+
 function comparable(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(comparable)
   if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).filter(([k]) => k !== 'id').sort(([a],[b])=>a.localeCompare(b)).map(([k,v]) => [k,comparable(v)]))
@@ -387,8 +402,7 @@ export async function main(args = process.argv.slice(2)) {
   guardWrite(options,fingerprint,process.env)
   // All dry-run work and write guards precede these dynamic imports.
   const {getPayload} = await import('payload')
-  const {default:configPromise} = await import(pathToFileURL(path.join(ROOT,'src/payload.config.ts')).href)
-  const config: SanitizedConfig = await configPromise
+  const config: SanitizedConfig = await loadPayloadConfig() as SanitizedConfig
   const initAdapter = config.db.init
   config.db = {...config.db,init: args => {
     const adapter = initAdapter(args) as PostgresAdapter
