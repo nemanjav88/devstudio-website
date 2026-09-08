@@ -162,7 +162,7 @@ body { margin: 0; background: var(--ink); }
 .visual-caption { position: absolute; bottom: 18px; left: 20px; font: 8px monospace; letter-spacing: .14em; color: #b7bbac; z-index: 5; }
 .crosshair { position: absolute; top: 20px; right: 20px; font: 18px monospace; color: #ffffff60; }
 .visual--hero { grid-column: 2; grid-row: 1; align-self: stretch; min-width: 0; min-height: 540px; height: auto; background: radial-gradient(ellipse at 60% 50%,#34382a 0%,#151710 48%,#111210 75%); overflow: hidden; }
-.visual--hero .visual-media { inset: 24px 0; height: auto; padding: 16px; object-fit: contain; }
+.visual--hero .visual-media { inset: 24px 0 auto; height: calc(100% - 175px); padding: 16px; object-fit: contain; }
 .visual--hero .visual-grid { opacity: .3; }
 .assembly { position: absolute; width: 500px; height: 520px; left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(-22deg); }
 .disc { position: absolute; width: 340px; height: 150px; border-radius: 50%; left: 80px; background: repeating-conic-gradient(from 0deg,#44483d 0deg,#b5b9a4 1deg,#656958 2deg,#1b1e16 3deg); box-shadow: 0 7px 0 #34372b,0 12px 0 #24271e,0 16px 0 #5b6050,0 24px 25px #0009; border: 1px solid #a7ad8e; }
