@@ -31,7 +31,7 @@ body { margin: 0; background: var(--ink); }
 .site-header--detail .navigation { color: var(--paper); }
 .site-header--detail .navigation .header-cta { border-color: #aeb2a4; }
 .site-header--detail.is-scrolled { background: #0c0d0cf2; border-bottom-color: #ffffff30; box-shadow: 0 14px 36px #00000040; }
-.wordmark { display: flex; align-items: center; flex: 0 0 auto; width: 164px; height: 51px; padding: 7px 9px; background: var(--paper); }
+.wordmark { display: flex; align-items: center; flex: 0 0 auto; width: 164px; height: 51px; padding: 0; background: transparent; }
 .wordmark-image { display: block; width: 100%; height: auto; }
 .navigation { display: flex; align-items: center; gap: 25px; font-size: 11px; }
 .navigation > a,.navigation > button { transition: color .2s; white-space: nowrap; }
@@ -228,7 +228,7 @@ body { margin: 0; background: var(--ink); }
 }
 @media(max-width:850px) {
   .site-header,.site-header.is-scrolled { min-height: 64px; padding-block: 15px; background: #111210e8; border-bottom-color: #ffffff1c; box-shadow: 0 12px 32px #00000022; backdrop-filter: blur(16px) saturate(115%); -webkit-backdrop-filter: blur(16px) saturate(115%); }
-  .site-header.is-scrolled .wordmark,.site-header .wordmark { width: 126px; height: 40px; padding: 6px 7px; }
+  .site-header.is-scrolled .wordmark,.site-header .wordmark { width: 126px; height: 40px; padding: 0; }
   .menu-toggle { display: block; font: 11px monospace!important; }
   .navigation { display: none; position: absolute; top: 100%; left: 0; right: 0; background: #171a14; padding: 25px 6% 35px; border-bottom: 1px solid #555c46; box-shadow: 0 20px 25px #0005; max-height: calc(100dvh - 76px); overflow: auto; }
   .navigation.is-open { display: flex; flex-direction: column; align-items: stretch; gap: 0; }

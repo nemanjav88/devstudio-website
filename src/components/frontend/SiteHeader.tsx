@@ -38,7 +38,7 @@ export function SiteHeader({ locale, settings, translatedPaths, detail }: {
   }, [])
   return <header className={`site-header${detail ? ' site-header--detail' : ''}${scrolled ? ' is-scrolled' : ''}`}>
     <a className="wordmark" href={localizedHref('/#', locale)} aria-label={t('Dev Studio home')}>
-      <Image className="wordmark-image" src="/brand/devstudio-logo.png" alt="" width={852} height={267} priority />
+      <Image className="wordmark-image" src="/brand/devstudio-logo-header.png" alt="" width={852} height={267} priority />
     </a>
     <button className="menu-toggle" ref={button} aria-expanded={menu} aria-controls="main-navigation" onClick={() => setMenu(!menu)}>{menu ? t('CLOSE −') : t('MENU +')}</button>
     <nav id="main-navigation" aria-label={t('Main navigation')} className={menu ? 'navigation is-open' : 'navigation'}>
