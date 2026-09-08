@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { localizedHref, type Locale } from '@/lib/i18n'
 import { homeText } from '@/lib/home-copy'
@@ -36,7 +37,9 @@ export function SiteHeader({ locale, settings, translatedPaths, detail }: {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
   return <header className={`site-header${detail ? ' site-header--detail' : ''}${scrolled ? ' is-scrolled' : ''}`}>
-    <a className="wordmark" href={localizedHref('/#', locale)} aria-label={t('Dev Studio home')}>dev<span className="logo-symbol">✳</span><small>STUDIO</small></a>
+    <a className="wordmark" href={localizedHref('/#', locale)} aria-label={t('Dev Studio home')}>
+      <Image className="wordmark-image" src="/brand/devstudio-logo.png" alt="" width={852} height={267} priority />
+    </a>
     <button className="menu-toggle" ref={button} aria-expanded={menu} aria-controls="main-navigation" onClick={() => setMenu(!menu)}>{menu ? t('CLOSE −') : t('MENU +')}</button>
     <nav id="main-navigation" aria-label={t('Main navigation')} className={menu ? 'navigation is-open' : 'navigation'}>
       {items.map(([label, path]) => {
