@@ -21,3 +21,5 @@ node scripts/import-catalog-content.ts
 ```
 
 No import, publication, Homepage update or production data change has been executed. The supplied source PDF and PROJECT_BRIEF.md are unchanged. The package is uncommitted.
+
+The raw `content-source/dev-studio-katalog-2026.pdf` file is local provenance and is intentionally not part of the deployment package. The importer uses the byte-verified copy in `content-import/downloads/` and committed media under `content-import/media/`. When the raw source is present locally it is checked as an optional provenance verification; a deployed environment without `content-source/` continues normally.

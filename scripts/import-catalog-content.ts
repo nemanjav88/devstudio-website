@@ -77,15 +77,25 @@ function text(value: unknown, label: string): asserts value is string {
   assert(typeof value === 'string' && value.trim().length > 0, `Missing ${label}`)
 }
 
-/** Strict offline validation: references, sources, classifications and real schema hashes. */
+/** Strict offline validation: packaged sources, classifications and real schema hashes. */
 export function validateManifest(input: unknown): Manifest {
   assert(input && typeof input === 'object', 'Manifest must be an object')
   const m = input as Manifest
   assert.equal(m.formatVersion, 1)
   assert.equal(m.packageKey, 'dev-studio-catalog-2026')
   assert.equal(m.source.pages, 21)
-  const source = assertFile(ROOT, m.source.file, m.source.sha256)
-  assert.equal(source.subarray(0,5).toString(), '%PDF-')
+  // The raw source directory is intentionally local-only and may be absent in
+  // a deployed container. The committed package is authoritative at runtime;
+  // if the raw source is present locally, verify it as an optional provenance
+  // check without making imports depend on it.
+  assert(!path.isAbsolute(m.source.file), 'Source provenance path must be relative')
+  const optionalSource = path.resolve(ROOT, m.source.file)
+  const sourceRelative = path.relative(ROOT, optionalSource)
+  assert(sourceRelative && sourceRelative !== '..' && !sourceRelative.startsWith(`..${path.sep}`) && !path.isAbsolute(sourceRelative), 'Source provenance path escapes repository')
+  if (existsSync(optionalSource)) {
+    const source = assertFile(ROOT, m.source.file, m.source.sha256)
+    assert.equal(source.subarray(0,5).toString(), '%PDF-')
+  }
   assert.deepEqual(m.projects, [], 'Project candidates are review-only')
   assert.deepEqual(m.stories, [], 'Stories are not in this import')
   assert.deepEqual(m.clients, [], 'Clients are not in this import')
@@ -369,6 +379,8 @@ export async function main(args = process.argv.slice(2)) {
   const m = validateManifest(JSON.parse(bytes.toString('utf8')))
   const fingerprint = hash(bytes)
   console.log(`VALID manifest ${fingerprint}`)
+  if (existsSync(path.resolve(ROOT, m.source.file))) console.log(`SOURCE PROVENANCE: local original verified at ${m.source.file}`)
+  else console.log(`SOURCE PROVENANCE: original ${m.source.file} unavailable; using committed content-import package assets.`)
   console.log(`PLAN: ${m.solutions.length} draft Solutions (BHS + EN); ${m.assets.filter(a=>a.importEnabled).length} Media uploads; ${m.downloads.length} BHS Download; ${m.projectCandidates.length} review-only Project candidates.`)
   for (const s of m.solutions) console.log(`SOLUTION ${s.key} [${s.solutionGroup}] /solutions/${s.locales.bhs.slug} <-> /en/solutions/${s.locales.en.slug}; hero=${s.importHeroMedia || 'none: suitable non-concept image unavailable'}; gallery=${s.importGalleryMedia.length}; total=${Number(Boolean(s.importHeroMedia))+s.importGalleryMedia.length}`)
   if (!options.write) { console.log('DRY RUN: local validation only. Payload config not loaded. No database connection or writes.'); return }

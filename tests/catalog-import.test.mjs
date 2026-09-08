@@ -18,6 +18,12 @@ test('manifest validates all 21 pages, 13 required groups, references and origin
   assert.deepEqual(manifest.solutions.filter(s => !s.importHeroMedia).map(s => s.key), ['retail-media-screens'])
 })
 
+test('deployed validation does not require the untracked raw source directory', () => {
+  const manifest = fresh()
+  manifest.source.file = 'content-source/catalog-not-present-in-deployment.pdf'
+  assert.doesNotThrow(() => validateManifest(manifest))
+})
+
 test('rejects wrong grouping, AI as real work, missing disclosure, broken refs and translation drift', () => {
   for (const mutate of [
     m => { m.solutions[0].solutionGroup = 'production' },
