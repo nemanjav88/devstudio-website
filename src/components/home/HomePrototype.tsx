@@ -32,7 +32,8 @@ const baseStories = [
 function Arrow() { return <span aria-hidden="true">↗</span> }
 
 function Visual({ kind, hero = false, media }: { kind: string; hero?: boolean; media?: string }) {
-  return <div className={`visual visual--${kind} ${hero ? 'visual--hero' : ''}`} aria-hidden="true">\n    {media && <img className="visual-media" src={media} alt="" />}
+  return <div className={`visual visual--${kind} ${hero ? 'visual--hero' : ''}`} aria-hidden="true">
+    {media && <img className="visual-media" src={media} alt="" />}
     <div className="visual-grid" />
     {kind === 'machine' ? <div className="assembly"><div className="axis" />{[0, 1, 2, 3].map(i => <div className={`disc disc-${i}`} key={i}><div className="disc-hole" /></div>)}<span className="measure measure-a">CONCEPT / FORM</span><span className="measure measure-b">HARDWARE / MATTER</span></div>
       : kind === 'retail' ? <div className="kiosk"><div className="kiosk-screen"><span>HELLO.</span><div className="screen-lines" /><i /><b>LET’S INTERACT ↗</b></div><div className="kiosk-foot" /></div>
