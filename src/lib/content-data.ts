@@ -17,7 +17,7 @@ export async function findEditorial<C extends EditorialCollection>(collection: C
   try {
     const result = await payload.find({
       collection, locale, fallbackLocale: false, overrideAccess: false, draft: false, depth: 2,
-      joins: false as JoinQuery<C>, limit, page, sort: collection === 'solutions' ? 'title' : '-createdAt',
+      joins: false as JoinQuery<C>, limit, page, pagination: limit !== 0, sort: collection === 'solutions' ? 'title' : '-createdAt',
       where: where ? { and: [translatedPublished, where] } : translatedPublished,
     })
     return { docs: result.docs.filter(isPublished), page: result.page || page, totalPages: result.totalPages, totalDocs: result.totalDocs, unavailable: false }
@@ -25,6 +25,11 @@ export async function findEditorial<C extends EditorialCollection>(collection: C
     console.warn(`[frontend] ${collection} query unavailable.`)
     return { ...empty, unavailable: true }
   }
+}
+
+// Anchor-linked groups need the entire collection, not a slice of the title-sorted list.
+export function findAllSolutions(locale: Locale) {
+  return findEditorial('solutions', locale, 1, undefined, 0)
 }
 
 export const getDetail = cache(async (collection: EditorialCollection, slug: string, locale: Locale) => {

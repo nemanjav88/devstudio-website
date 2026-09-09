@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import type { Download, Project, Solution, Story } from '@/payload-types'
 import { coverMedia, description, pageNumber, populated, type EditorialCollection, type SearchParams, type Section } from '@/lib/content'
-import { findDownloads, findEditorial, getDetail, getRelated } from '@/lib/content-data'
+import { findAllSolutions, findDownloads, findEditorial, getDetail, getRelated } from '@/lib/content-data'
 import { languageAlternates, localizedHref, type Locale } from '@/lib/i18n'
 import { sectionCopy, ui } from '@/lib/section-copy'
 import { ContentShell } from './ContentShell'
@@ -13,7 +13,7 @@ import { EditorialText } from './EditorialText'
 export async function indexMetadata(section: Section, locale: Locale, searchParams?: Promise<SearchParams>): Promise<Metadata> {
   const copy = sectionCopy(locale, section)
   const page = pageNumber((await searchParams)?.page)
-  const path = `/${section}${page > 1 && section !== 'resources' ? `?page=${page}` : ''}`
+  const path = `/${section}${page > 1 && section !== 'resources' && section !== 'solutions' ? `?page=${page}` : ''}`
   return { title: `${copy.label} — Dev Studio`, description: copy.intro,
     alternates: { canonical: localizedHref(path, locale), languages: languageAlternates(path) }, robots: { index: false, follow: false } }
 }
@@ -54,14 +54,14 @@ function GroupedSolutions({ docs, locale }: { docs: Solution[]; locale: Locale }
 }
 
 export async function IndexPage({ collection, locale, searchParams }: { collection: EditorialCollection; locale: Locale; searchParams: Promise<SearchParams> }) {
-  const page = pageNumber((await searchParams).page)
-  const result = await findEditorial(collection, locale, page)
+  const page = collection === 'solutions' ? 1 : pageNumber((await searchParams).page)
+  const result = collection === 'solutions' ? await findAllSolutions(locale) : await findEditorial(collection, locale, page)
   if (!result.unavailable && page > 1 && page > result.totalPages) notFound()
   return <ContentShell locale={locale}>
     <SectionIntro section={collection} locale={locale} />
     <section className={`content-index content-index--${collection} content-pad`} aria-label={sectionCopy(locale, collection).label}>
       {result.docs.length ? collection === 'solutions' ? <GroupedSolutions docs={result.docs as Solution[]} locale={locale} /> : <EditorialList collection={collection} docs={result.docs} locale={locale} /> : <EmptyState locale={locale} unavailable={result.unavailable} />}
-      <Pagination path={`/${collection}`} page={page} totalPages={result.totalPages} locale={locale} />
+      {collection !== 'solutions' && <Pagination path={`/${collection}`} page={page} totalPages={result.totalPages} locale={locale} />}
     </section>
   </ContentShell>
 }
