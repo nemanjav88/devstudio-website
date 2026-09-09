@@ -37,6 +37,22 @@ function SectionIntro({ section, locale }: { section: Section; locale: Locale })
   </header>
 }
 
+const solutionGroups = ['digital-retail', 'brand-experiences', 'entertainment', 'custom-engineering', 'production'] as const
+
+function GroupedSolutions({ docs, locale }: { docs: Solution[]; locale: Locale }) {
+  const labels = ui(locale)
+  return <div className="solution-groups">
+    {solutionGroups.map(group => {
+      const groupDocs = docs.filter(doc => doc.solutionGroup === group)
+      if (!groupDocs.length) return null
+      return <section className="solution-group" id={group} aria-labelledby={`${group}-heading`} key={group}>
+        <h2 className="solution-group-heading" id={`${group}-heading`}>{labels[group]}</h2>
+        <EditorialList collection="solutions" docs={groupDocs} locale={locale} />
+      </section>
+    })}
+  </div>
+}
+
 export async function IndexPage({ collection, locale, searchParams }: { collection: EditorialCollection; locale: Locale; searchParams: Promise<SearchParams> }) {
   const page = pageNumber((await searchParams).page)
   const result = await findEditorial(collection, locale, page)
@@ -44,7 +60,7 @@ export async function IndexPage({ collection, locale, searchParams }: { collecti
   return <ContentShell locale={locale}>
     <SectionIntro section={collection} locale={locale} />
     <section className={`content-index content-index--${collection} content-pad`} aria-label={sectionCopy(locale, collection).label}>
-      {result.docs.length ? <EditorialList collection={collection} docs={result.docs} locale={locale} /> : <EmptyState locale={locale} unavailable={result.unavailable} />}
+      {result.docs.length ? collection === 'solutions' ? <GroupedSolutions docs={result.docs as Solution[]} locale={locale} /> : <EditorialList collection={collection} docs={result.docs} locale={locale} /> : <EmptyState locale={locale} unavailable={result.unavailable} />}
       <Pagination path={`/${collection}`} page={page} totalPages={result.totalPages} locale={locale} />
     </section>
   </ContentShell>

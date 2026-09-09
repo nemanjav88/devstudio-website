@@ -28,6 +28,24 @@ const baseStories = [
   ['Technology', 'Where hardware meets software.', 'interactive'],
   ['Studio Notes', 'Ideas are only the beginning.', 'brand'],
 ]
+const solutionGroupLinks = [
+  ['digital-retail', 'Retail Technology & Digital Systems'],
+  ['brand-experiences', 'Brand Experiences'],
+  ['entertainment', 'Interactive Entertainment'],
+  ['custom-engineering', 'Custom Engineering'],
+  ['production', 'Production & Fabrication'],
+] as const
+type SolutionGroup = typeof solutionGroupLinks[number][0]
+
+function solutionGroupForCategory(name: string, index: number): SolutionGroup | undefined {
+  const normalized = name.toLocaleLowerCase()
+  if (normalized.includes('retail') || normalized.includes('maloprod')) return 'digital-retail'
+  if (normalized.includes('brand') || normalized.includes('brend')) return 'brand-experiences'
+  if (normalized.includes('entertain') || normalized.includes('zabav') || normalized.includes('interaktiv')) return 'entertainment'
+  if (normalized.includes('custom') || normalized.includes('mjeri')) return 'custom-engineering'
+  if (normalized.includes('manufactur') || normalized.includes('proizvod') || normalized.includes('fabricat') || normalized.includes('izrad')) return 'production'
+  return solutionGroupLinks[index]?.[0]
+}
 
 function Arrow() { return <span aria-hidden="true">↗</span> }
 
@@ -66,7 +84,11 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
   const processItems = home?.process?.steps?.length
     ? home.process.steps.map((step, index) => [step.title || steps[index]?.[0] || '', step.description || steps[index]?.[1] || ''] as [string, string])
     : steps
-  const buildItems = home?.whatWeBuild?.categories?.map(category => category.name).filter((name): name is string => Boolean(name))
+  const buildItems = (home?.whatWeBuild?.categories?.length
+    ? home.whatWeBuild.categories.map((category, index) => ({ name: category.name, group: category.name ? solutionGroupForCategory(category.name, index) : undefined }))
+    : solutionGroupLinks.map(([group, name]) => ({ name: t(name), group })))
+    .filter((item): item is { name: string; group: SolutionGroup } => Boolean(item.name && item.group))
+    .filter((item, index, items) => items.findIndex(candidate => candidate.group === item.group) === index)
   const heroMedia = mediaURL(home?.hero?.heroMedia)
   const madeMedia = mediaURL(home?.madeHere?.media)
   const ownProductsMedia = mediaURL(home?.ownProducts?.media)
@@ -126,7 +148,7 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
       </section>
       <section className="build-section section-light section-pad" id="solutions">
         <div className="section-label"><span>{t("03 / WHAT WE BUILD")}</span><span>{t("NO SINGLE DISCIPLINE. NO SINGLE BOX.")}</span></div>
-        <div className="build-layout"><h2>{home?.whatWeBuild?.headline || <>{t("COMPLEX IDEAS.")}<br />{t("COMPLETE")}<br /><span className="muted">{t("SOLUTIONS.")}</span></>}</h2><div className="capability-list">{(buildItems?.length ? buildItems : [t("Interactive Systems"), t("Retail Technology"), t("Brand Experiences"), t("Custom Products"), t("Entertainment"), t("Manufacturing")]).map((name, i) => <a href={localizedHref('/#process', locale)} key={name}><span className="meta">0{i + 1}</span><span>{name}</span><Arrow /></a>)}</div></div>
+        <div className="build-layout"><h2>{home?.whatWeBuild?.headline || <>{t("COMPLEX IDEAS.")}<br />{t("COMPLETE")}<br /><span className="muted">{t("SOLUTIONS.")}</span></>}</h2><div className="capability-list">{buildItems.map(({ name, group }, i) => <a href={localizedHref(`/solutions#${group}`, locale)} key={`${group}-${name}`}><span className="meta">0{i + 1}</span><span>{name}</span><Arrow /></a>)}</div></div>
       </section>
       <section className="process-section section-dark section-pad" id="process">
         <div className="section-label"><span>{t("04 / FROM FIRST THOUGHT TO FINAL DETAIL")}</span><span>{t("ONE CONTINUOUS PROCESS")}</span></div>
