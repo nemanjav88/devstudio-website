@@ -5,6 +5,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SiteHeader } from '@/components/frontend/SiteHeader'
 import { SiteFooter } from '@/components/frontend/SiteFooter'
+import { HeroProcessFlow } from './HeroProcessFlow'
 import { localizedHref } from '@/lib/i18n'
 import { homeText } from '@/lib/home-copy'
 import type { HomeCmsData } from '@/lib/homepage-types'
@@ -89,7 +90,6 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
     : solutionGroupLinks.map(([group, name]) => ({ name: t(name), group })))
     .filter((item): item is { name: string; group: SolutionGroup } => Boolean(item.name && item.group))
     .filter((item, index, items) => items.findIndex(candidate => candidate.group === item.group) === index)
-  const heroMedia = mediaURL(home?.hero?.heroMedia)
   const madeMedia = mediaURL(home?.madeHere?.media)
   const ownProductsMedia = mediaURL(home?.ownProducts?.media)
   const finalCtaMedia = mediaURL(home?.finalCta?.media)
@@ -110,6 +110,7 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
     const mm = gsap.matchMedia()
     mm.add('(prefers-reduced-motion: no-preference)', () => {
       gsap.from('.hero-copy > *', { y: 24, opacity: 0, duration: 1, stagger: 0.12, ease: 'power3.out' })
+      gsap.from('.hero-process-trigger', { y: 8, opacity: 0, duration: 0.55, stagger: 0.08, ease: 'power2.out', scrollTrigger: { trigger: '.hero-process-flow', start: 'top 92%', once: true } })
       gsap.to('.process-progress', { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.process-steps', start: 'top 60%', end: 'bottom 60%', scrub: true } })
       gsap.utils.toArray<HTMLElement>('.process-step').forEach(step => {
         ScrollTrigger.create({ trigger: step, start: 'top 65%', end: 'bottom 40%', toggleClass: 'is-active' })
@@ -127,12 +128,13 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
     <main id="main">
       <section className="hero section-dark" aria-labelledby="hero-title">
         <div className="hero-top meta"><span><i className="status-dot" />  {t("INDEPENDENT THINKING. INTEGRATED MAKING.")}</span><span>BANJA LUKA · BA</span></div>
-        <div className="hero-stage"><Visual kind="machine" hero media={heroMedia} />
+        <div className="hero-stage">
           <div className="hero-copy"><p className="eyebrow">{home?.hero?.eyebrow || t("FROM IDEA TO REALITY.")}</p><h1 id="hero-title">{home?.hero?.headline ? home.hero.headline.split('\n').map((line, index) => <span key={line}>{index > 0 && <br />}{line}</span>) : <>{t("WE BUILD")}<br />{t("WHAT OTHERS")}<br /><em>{t("ONLY IMAGINE.")}</em></>}</h1>
             <p className="hero-disciplines">{home?.hero?.supportingLine || t("Design. Electronics. Software. Manufacturing.")}</p>
             <p className="hero-description">{home?.hero?.subtext || t("From the first idea to a finished product — engineered, built and delivered by one team.")}</p>
             <div className="hero-actions"><button className="button button-yellow" onClick={contact}>{home?.hero?.primaryCtaLabel || t("Start a Project")} <Arrow /></button><a className="text-link" href={localizedHref('/#projects', locale)}>{home?.hero?.secondaryCtaLabel || t("Explore our work")} <span aria-hidden="true">↓</span></a></div>
           </div>
+          <HeroProcessFlow locale={locale} />
         </div>
         <div className="hero-bottom meta"><span>{t("IDEAS ARE JUST THE BEGINNING.")}</span><span>{t("SCROLL TO DISCOVER ↓")}</span><span>{t("DESIGN × ENGINEERING × PRODUCTION")}</span></div>
       </section>

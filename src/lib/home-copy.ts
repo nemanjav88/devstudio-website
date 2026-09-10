@@ -2,6 +2,18 @@ import type { Locale } from './i18n'
 
 // Localized versions of the existing prototype copy, used only when CMS content is missing.
 const bhs: Record<string, string> = {
+  'Idea': 'Ideja',
+  'Design': 'Dizajn',
+  'Mechanics': 'Mehanika',
+  'Electronics': 'Elektronika',
+  'Software': 'Softver',
+  'We define the concept and product goal.': 'Definišemo koncept i cilj rješenja.',
+  'We shape form, function and experience.': 'Oblikujemo funkciju, formu i iskustvo.',
+  'We develop structure and components.': 'Razvijamo konstrukciju i komponente.',
+  'We integrate PCB, sensors and control.': 'Povezujemo PCB, senzore i upravljanje.',
+  'We build interaction, logic and content.': 'Razvijamo interakciju, logiku i sadržaj.',
+  'We manufacture, assemble and deliver.': 'Izrađujemo, sastavljamo i isporučujemo.',
+  'Product development workshop with design drawings, electronics, manufacturing equipment and a finished interactive terminal.': 'Radionica za razvoj proizvoda sa nacrtima, elektronikom, proizvodnom opremom i gotovim interaktivnim terminalom.',
   'Solutions': 'Rješenja',
   'Projects': 'Projekti',
   'Capabilities': 'Mogućnosti',
