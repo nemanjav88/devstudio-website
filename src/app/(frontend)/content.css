@@ -62,14 +62,11 @@
 /* Solutions share one reserved media stage; other editorial media keep their layout. */
 .editorial-list--solutions .entry-image { align-self: start; }
 .solution-media { display: grid; place-items: center; width: 100%; overflow: hidden; isolation: isolate; background: var(--paper); }
-.solution-media--solution-card { aspect-ratio: 4 / 3; }
+.solution-media--solution-card,.solution-media--gallery-tile { aspect-ratio: 4 / 3; }
 .solution-media--contain { padding: clamp(16px, 2.4vw, 32px); }
-.editorial-list--solutions .solution-media .content-image,
-.content-detail--solutions .solution-media .content-image { width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; background: transparent; box-shadow: none; }
+.solution-media .content-image { width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; background: transparent; box-shadow: none; }
 .solution-media--contain .content-image { object-fit: contain; max-width: min(100%, var(--media-width)); max-height: min(100%, var(--media-height)); }
 .solution-media--cover .content-image { object-fit: cover; }
-/* The portrait/near-square heuristic softens white backdrops; cover media and video stay unblended. */
-.solution-media--product img { mix-blend-mode: multiply; }
 .editorial-entry > a:hover .solution-media--contain img { transform: none; }
 .content-detail--solutions .detail-hero { padding: 0; background: none; border: 0; box-shadow: none; }
 .solution-media--solution-hero.solution-media--contain { --media-padding: clamp(24px, 4vw, 56px); height: min(680px, 72svh, calc(var(--media-height) + var(--media-padding) + var(--media-padding))); padding: var(--media-padding); }
@@ -98,6 +95,25 @@
 .gallery-sequence { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 50px 30px; align-items: start; }
 .gallery-sequence figure:nth-child(3n + 1) { grid-column: 1 / -1; }
 .gallery-sequence figure:nth-child(3n) { padding-top: 80px; }
+.content-gallery-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 28px; align-items: start; }
+.content-gallery-grid figure { min-width: 0; }
+.content-gallery-grid figcaption { overflow-wrap: anywhere; }
+.gallery-open { display: block; width: 100%; padding: 0; border: 1px solid #92978366; position: relative; background: var(--paper); color: var(--ink); text-align: left; }
+.gallery-enlarge { position: absolute; right: 12px; bottom: 10px; font-size: 20px; line-height: 1; pointer-events: none; }
+.gallery-open:focus-visible { outline: 2px solid var(--yellow); outline-offset: 5px; }
+.media-lightbox { position: fixed; inset: 0; width: 100%; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--ink); color: var(--paper); overscroll-behavior: contain; }
+.media-lightbox::backdrop { background: var(--ink); }
+.media-lightbox-layout { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+.media-lightbox-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.media-lightbox-control { display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid var(--line); background: transparent; color: inherit; font-size: 26px!important; }
+.media-lightbox-control:disabled { opacity: .25; cursor: default; }
+.media-lightbox-control:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+.media-lightbox-stage { min-height: 0; min-width: 0; touch-action: pan-y pinch-zoom; }
+.solution-media--lightbox { height: 100%; background: transparent; padding: clamp(12px, 2vw, 28px); }
+.media-lightbox-footer { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; gap: clamp(12px, 3vw, 40px); align-items: center; }
+.media-lightbox-caption { font: 12px/1.6 "Courier New", monospace; text-align: center; overflow-wrap: anywhere; max-height: min(160px, 24dvh); overflow-y: auto; overscroll-behavior: contain; }
+@media(max-width:1100px) { .content-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width:580px) { .content-gallery-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
 .related-content,.detail-downloads { background: var(--paper); color: var(--ink); }
 .related-group + .related-group { margin-top: 65px; }
 .related-heading { font-size: 25px; margin-bottom: 30px!important; }
