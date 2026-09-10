@@ -13,7 +13,7 @@ export function EditorialList({ collection, docs, locale, compact = false }: { c
       const type = 'type' in doc ? labels[doc.type] : 'solutionGroup' in doc ? labels[doc.solutionGroup] : client
       return <article className={`editorial-entry${media?.url ? '' : ' editorial-entry--text'}`} key={doc.id}>
         <a href={documentHref(collection, doc, locale)}>
-          <div className="entry-image">{media?.url ? <ContentMedia media={media} alt={doc.title} /> : <span className="entry-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>}</div>
+          <div className="entry-image">{media?.url ? <ContentMedia media={media} alt={doc.title} presentation={collection === 'solutions' ? 'solution-card' : undefined} /> : <span className="entry-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>}</div>
           <div className="entry-copy">
             <div className="meta"><span>{type || sectionCopy(locale, collection).label}</span>{'year' in doc && doc.year && <span>{doc.year}</span>}</div>
             <h2>{doc.title}<span className="entry-arrow" aria-hidden="true">↗</span></h2>

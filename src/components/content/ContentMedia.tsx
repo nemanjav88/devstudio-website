@@ -1,17 +1,26 @@
 import Image from 'next/image'
+import type { CSSProperties } from 'react'
 import type { Media, Project } from '@/payload-types'
 import { populated, safeHref } from '@/lib/content'
 import type { Locale } from '@/lib/i18n'
 import { ui } from '@/lib/section-copy'
+import { solutionMediaPresentation, type SolutionMediaContext } from '@/lib/media-presentation'
 
-export function ContentMedia({ media, alt = '', eager = false }: { media?: Media | number | null; alt?: string; eager?: boolean }) {
+export function ContentMedia({ media, alt = '', eager = false, presentation }: { media?: Media | number | null; alt?: string; eager?: boolean; presentation?: SolutionMediaContext }) {
   const asset = populated(media)
   const src = safeHref(asset?.url)
   if (!src || !asset) return null
-  if (asset.mimeType?.startsWith('video/')) return <video className="content-image" controls playsInline preload="metadata" aria-label={asset.alt || alt}><source src={src} type={asset.mimeType} /></video>
-  if (!asset.mimeType?.startsWith('image/')) return null
-  return <Image className="content-image" src={src} alt={asset.alt || alt} width={asset.width || 1600} height={asset.height || 1000}
-    unoptimized loading={eager ? 'eager' : 'lazy'} style={{ objectPosition: `${asset.focalX ?? 50}% ${asset.focalY ?? 50}%` }} />
+  const strategy = presentation ? solutionMediaPresentation(asset, presentation) : undefined
+  const video = asset.mimeType?.startsWith('video/')
+  if (!video && !asset.mimeType?.startsWith('image/')) return null
+  const element = video ? <video className="content-image" controls playsInline preload="metadata" aria-label={asset.alt || alt}><source src={src} type={asset.mimeType!} /></video>
+    : <Image className="content-image" src={src} alt={asset.alt || alt} width={asset.width || 1600} height={asset.height || 1000}
+      unoptimized loading={eager ? 'eager' : 'lazy'} style={{ objectPosition: strategy?.fit === 'contain' ? '50% 50%' : `${asset.focalX ?? 50}% ${asset.focalY ?? 50}%` }} />
+  if (!strategy) return element
+  return <div className={`solution-media solution-media--${presentation} solution-media--${strategy.fit}${strategy.productLike ? ' solution-media--product' : ''}`}
+    style={{ '--media-width': `${strategy.width || 640}px`, '--media-height': `${strategy.height || 480}px`, '--media-ratio': strategy.ratio || 16 / 9 } as CSSProperties}>
+    {element}
+  </div>
 }
 
 export function Gallery({ gallery, locale }: { gallery: Project['gallery']; locale: Locale }) {

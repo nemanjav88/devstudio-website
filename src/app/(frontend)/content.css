@@ -59,6 +59,24 @@
 .detail-hero { margin: 0 3%; padding: clamp(18px, 3.5vw, 56px) clamp(18px, 6vw, 96px); background: radial-gradient(circle at 50% 34%, #34382d 0%, #20231c 48%, #151713 100%); border-block: 1px solid #ffffff1f; box-shadow: inset 0 1px #ffffff0a, 0 18px 55px #0000002b; }
 .detail-hero .content-image { width: 100%; max-height: 78vh; object-fit: contain; background: var(--paper); box-shadow: 0 12px 34px #00000030; }
 .detail-hero figcaption { color: #bfc2b6; }
+/* Solutions share one reserved media stage; other editorial media keep their layout. */
+.editorial-list--solutions .entry-image { align-self: start; }
+.solution-media { display: grid; place-items: center; width: 100%; overflow: hidden; isolation: isolate; background: var(--paper); }
+.solution-media--solution-card { aspect-ratio: 4 / 3; }
+.solution-media--contain { padding: clamp(16px, 2.4vw, 32px); }
+.editorial-list--solutions .solution-media .content-image,
+.content-detail--solutions .solution-media .content-image { width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; background: transparent; box-shadow: none; }
+.solution-media--contain .content-image { object-fit: contain; max-width: min(100%, var(--media-width)); max-height: min(100%, var(--media-height)); }
+.solution-media--cover .content-image { object-fit: cover; }
+/* The portrait/near-square heuristic softens white backdrops; cover media and video stay unblended. */
+.solution-media--product img { mix-blend-mode: multiply; }
+.editorial-entry > a:hover .solution-media--contain img { transform: none; }
+.content-detail--solutions .detail-hero { padding: 0; background: none; border: 0; box-shadow: none; }
+.solution-media--solution-hero.solution-media--contain { --media-padding: clamp(24px, 4vw, 56px); height: min(680px, 72svh, calc(var(--media-height) + var(--media-padding) + var(--media-padding))); padding: var(--media-padding); }
+.content-detail--solutions .solution-media--solution-hero.solution-media--contain .content-image { max-width: min(800px, 100%, var(--media-width)); }
+.solution-media--solution-hero.solution-media--cover { aspect-ratio: var(--media-ratio); }
+.content-detail--solutions .solution-media--solution-hero .content-image { max-height: min(100%, var(--media-height)); }
+.content-detail--solutions .solution-media--solution-hero.solution-media--cover .content-image { max-height: 100%; }
 .detail-narrative { display: grid; grid-template-columns: 1fr 3fr; gap: 7%; padding-block: 100px; background: var(--paper); color: var(--ink); margin-top: 60px; }
 .detail-narrative > .eyebrow { border-top: 1px solid #929783; padding-top: 15px; }
 .editorial-prose { max-width: 790px; overflow-wrap: anywhere; font-size: 18px; line-height: 1.85; }
@@ -225,6 +243,7 @@
   .project-facts { gap: 24px; }
   .project-facts dd { font-size: 13px; }
   .detail-hero { margin-inline: 0; }
+  .solution-media--solution-hero.solution-media--contain { height: min(460px, 62svh, calc(var(--media-height) + var(--media-padding) + var(--media-padding))); }
   .gallery-sequence { grid-template-columns: 1fr; gap: 35px; }
   .gallery-sequence figure { grid-column: auto!important; padding-top: 0!important; }
   .content-empty { grid-template-columns: 1fr; padding: 40px 0; gap: 25px; }

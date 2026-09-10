@@ -97,7 +97,7 @@ export async function DetailPage({ collection, locale, slug }: { collection: Edi
         {description(doc) && <p className="detail-deck">{description(doc)}</p>}
         {collection === 'projects' && <ProjectFacts project={doc as Project} locale={locale} />}
       </header>
-      {media?.url && <figure className="detail-hero"><ContentMedia media={media} alt={doc.title} eager />
+      {media?.url && <figure className="detail-hero"><ContentMedia media={media} alt={doc.title} eager presentation={collection === 'solutions' ? 'solution-hero' : undefined} />
         {(doc.gallery?.find(item => populated(item.image)?.id === media.id)?.caption || media.caption) && <figcaption>{doc.gallery?.find(item => populated(item.image)?.id === media.id)?.caption || media.caption}</figcaption>}
       </figure>}
       {(doc.content?.root?.children?.length || ('video' in doc && (doc.video?.file || doc.video?.url))) ? <section className="detail-narrative content-pad">
