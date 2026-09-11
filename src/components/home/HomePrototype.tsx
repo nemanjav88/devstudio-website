@@ -54,12 +54,12 @@ function Visual({ kind, hero = false, media }: { kind: string; hero?: boolean; m
   return <div className={`visual visual--${kind} ${hero ? 'visual--hero' : ''}`} aria-hidden="true">
     {media && <img className="visual-media" src={media} alt="" />}
     <div className="visual-grid" />
-    {kind === 'machine' ? (!hero && <div className="assembly"><div className="axis" />{[0, 1, 2, 3].map(i => <div className={`disc disc-${i}`} key={i}><div className="disc-hole" /></div>)}<span className="measure measure-a">CONCEPT / FORM</span><span className="measure measure-b">HARDWARE / MATTER</span></div>)
+    {kind === 'machine' ? (!hero && <div className="assembly"><div className="axis" />{[0, 1, 2, 3].map(i => <div className={`disc disc-${i}`} key={i}><div className="disc-hole" /></div>)}</div>)
       : kind === 'retail' ? <div className="kiosk"><div className="kiosk-screen"><span>HELLO.</span><div className="screen-lines" /><i /><b>LET’S INTERACT ↗</b></div><div className="kiosk-foot" /></div>
       : kind === 'interactive' ? <div className="circuit"><div className="circuit-ring ring-a" /><div className="circuit-ring ring-b" /><div className="chip"><span>INPUT<br />MEETS<br /><b>OUTPUT.</b></span></div><div className="circuit-node" /></div>
       : kind === 'brand' ? <div className="monoliths"><i /><i /><i /><div className="brand-orbit" /></div>
       : <div className="play-shapes"><div className="play-arch" /><div className="play-ball" /><div className="play-cube" /><div className="play-floor" /></div>}
-    {!hero && <span className="visual-caption">ABSTRACT VISUAL STUDY</span>}<span className="crosshair">+</span>
+    <span className="crosshair">+</span>
   </div>
 }
 
