@@ -4,7 +4,7 @@ import type { Section } from './content'
 const copy = {
   en: {
     projects: { title: 'Ideas.\nMade tangible.', label: 'Projects', intro: 'Physical products. Digital experiences. The work that brings our disciplines together.' },
-    solutions: { title: 'Complex ideas.\nComplete solutions.', label: 'Solutions', intro: 'From digital and retail to custom engineering and production. One connected approach to what you need to build.' },
+    solutions: { title: 'What We Build', label: 'What We Build', intro: 'From digital and retail to custom engineering and production. One connected approach to what you need to build.' },
     stories: { title: 'Inside\nthe making.', label: 'Stories', intro: 'Projects, technology and the thinking behind the work. Notes from Dev Studio.' },
     resources: { title: 'The details.\nAll in one place.', label: 'Resources', intro: 'Catalogs, product information and thematic brochures. Explore the details in BHS and English.' },
     empty: 'More to come.', emptyBody: 'There are no published entries in this language yet. Explore another part of the studio or tell us what you have in mind.',
@@ -25,7 +25,7 @@ const copy = {
   },
   bhs: {
     projects: { title: 'Ideje.\nU stvarnom obliku.', label: 'Projekti', intro: 'Fizički proizvodi. Digitalna iskustva. Rad koji povezuje naše discipline.' },
-    solutions: { title: 'Složene ideje.\nCjelovita rješenja.', label: 'Rješenja', intro: 'Od digitalnih i maloprodajnih iskustava do inženjeringa po mjeri i proizvodnje. Jedan povezan pristup onome što želite izgraditi.' },
+    solutions: { title: 'Šta stvaramo', label: 'Šta stvaramo', intro: 'Od digitalnih i maloprodajnih iskustava do inženjeringa po mjeri i proizvodnje. Jedan povezan pristup onome što želite izgraditi.' },
     stories: { title: 'Iza\nstvaranja.', label: 'Priče', intro: 'Projekti, tehnologija i razmišljanje iza našeg rada. Bilješke iz Dev Studija.' },
     resources: { title: 'Detalji.\nNa jednom mjestu.', label: 'Resursi', intro: 'Katalozi, informacije o proizvodima i tematske brošure. Istražite detalje na BHS i engleskom jeziku.' },
     empty: 'Uskoro više.', emptyBody: 'Još nema objavljenog sadržaja na ovom jeziku. Istražite drugi dio studija ili nam recite šta imate na umu.',

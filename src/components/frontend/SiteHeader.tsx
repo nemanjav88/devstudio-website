@@ -7,6 +7,7 @@ import officialLogo from '../../../public/brand/logo.png'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { localizedHref, type Locale } from '@/lib/i18n'
 import { homeText } from '@/lib/home-copy'
+import { sectionCopy } from '@/lib/section-copy'
 import type { HomeCmsData } from '@/lib/homepage-types'
 
 export function SiteHeader({ locale, settings, translatedPaths, detail }: {
@@ -19,7 +20,7 @@ export function SiteHeader({ locale, settings, translatedPaths, detail }: {
   const t = (text: string) => homeText(locale, text)
   const labels = settings.navigation
   const items = [
-    [labels?.solutions || t('Solutions'), '/solutions'], [labels?.projects || t('Projects'), '/projects'],
+    [sectionCopy(locale, 'solutions').label, '/solutions'],
     [labels?.capabilities || t('Capabilities'), '/capabilities'], [labels?.about || t('About'), '/about'],
     [labels?.stories || t('Stories'), '/stories'], [labels?.resources || t('Resources'), '/resources'],
   ]

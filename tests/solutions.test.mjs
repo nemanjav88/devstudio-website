@@ -69,12 +69,15 @@ async function localizedRecords(locale) {
 
 test('Solutions index renders complete groups in both locales, including legacy page URLs', async () => {
   for (const locale of ['bhs', 'en']) {
+    const publicLabel = locale === 'bhs' ? 'Šta stvaramo' : 'What We Build'
     records = await localizedRecords(locale)
     assert.equal(records.length, 13)
     assert.ok(records.every(doc => doc._status === 'published' && doc.title && doc.slug))
     for (const page of ['1', '2', '99']) {
       queries = []
       const html = renderToStaticMarkup(await IndexPage({ collection: 'solutions', locale, searchParams: Promise.resolve({ page }) }))
+      assert.match(html, new RegExp(`DEV STUDIO / ${publicLabel}`))
+      assert.match(html, new RegExp(`<h1><span>${publicLabel}</span></h1>`))
       assert.equal(queries[0].pagination, false)
       assert.equal(queries[0].locale, locale)
       assert.equal(queries[0].fallbackLocale, false)
@@ -95,6 +98,7 @@ test('Solutions index renders complete groups in both locales, including legacy 
         assert.equal(localizedHref(`/solutions#${group}`, locale), `${locale === 'en' ? '/en' : ''}/solutions#${group}`)
       }
       const metadata = await indexMetadata('solutions', locale, Promise.resolve({ page }))
+      assert.equal(metadata.title, `${publicLabel} — Dev Studio`)
       assert.equal(metadata.alternates.canonical, localizedHref('/solutions', locale))
     }
     console.log(`${locale} rendered counts (${process.env.SOLUTIONS_TEST_LIVE === '1' ? 'live CMS' : 'manifest fixture'}): ${JSON.stringify(counts)}`)

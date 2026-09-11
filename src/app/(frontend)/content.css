@@ -100,7 +100,7 @@
 .content-gallery-grid figcaption { overflow-wrap: anywhere; }
 .gallery-open { display: block; width: 100%; padding: 0; border: 1px solid #92978366; position: relative; background: var(--paper); color: var(--ink); text-align: left; }
 .gallery-enlarge { position: absolute; right: 12px; bottom: 10px; font-size: 20px; line-height: 1; pointer-events: none; }
-.gallery-open:focus-visible { outline: 2px solid var(--yellow); outline-offset: 5px; }
+.gallery-open:focus-visible { outline: 2px solid var(--ink); outline-offset: 5px; box-shadow: 0 0 0 4px var(--yellow); }
 .media-lightbox { position: fixed; inset: 0; width: 100%; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--ink); color: var(--paper); overscroll-behavior: contain; }
 .media-lightbox::backdrop { background: var(--ink); }
 .media-lightbox-layout { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
@@ -163,7 +163,7 @@
 .capability-media-band h2,.about-split h2 { font-size: clamp(44px, 6vw, 92px); margin: 24px 0 30px!important; }
 .capability-media-band > div:last-child > p:last-child,.about-copy > p:last-child { max-width: 570px; font-size: 16px; line-height: 1.8; color: #b7bbb0; }
 .media-placeholder { min-height: 510px; background: linear-gradient(135deg, #20241a 0%, #121310 62%); border: 1px solid #ffffff1d; display: flex; flex-direction: column; justify-content: space-between; padding: 28px; position: relative; overflow: hidden; }
-.media-placeholder::before { content: ''; position: absolute; inset: 14% 12%; border: 1px solid #eafa3533; transform: rotate(-7deg); }
+.media-placeholder::before { content: ''; position: absolute; inset: 14% 12%; border: 1px solid color-mix(in srgb, var(--yellow) 20%, transparent); transform: rotate(-7deg); }
 .media-placeholder .meta,.media-placeholder p { position: relative; z-index: 1; }
 .media-placeholder p { color: #a6aa9f; max-width: 260px; font-size: 13px; line-height: 1.6; }
 .placeholder-cross { position: relative; z-index: 1; align-self: center; color: var(--yellow); font-size: clamp(100px, 16vw, 230px); line-height: 1; opacity: .8; }
