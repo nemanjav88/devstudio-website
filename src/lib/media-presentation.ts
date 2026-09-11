@@ -1,6 +1,6 @@
 import type { Media } from '@/payload-types'
 
-export type MediaPresentationContext = 'solution-card' | 'solution-hero' | 'gallery-tile' | 'lightbox'
+export type MediaPresentationContext = 'solution-card' | 'solution-hero' | 'gallery-tile' | 'lightbox' | 'lightbox-thumbnail'
 type MediaDimensions = Pick<Media, 'width' | 'height' | 'mimeType'>
 
 /** Geometry is a conservative fallback, not a claim about the image's subject. */

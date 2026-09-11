@@ -20,6 +20,7 @@ export function mediaImageSource(asset: Pick<Media, 'url' | 'updatedAt' | 'mimeT
 export function mediaImageSizes(context?: MediaPresentationContext) {
   if (context === 'solution-card') return '(max-width: 580px) 88vw, 28vw'
   if (context === 'gallery-tile') return '(max-width: 580px) 88vw, (max-width: 1100px) 44vw, 29vw'
+  if (context === 'lightbox-thumbnail') return '88px'
   if (context === 'lightbox') return '94vw'
   return '88vw'
 }

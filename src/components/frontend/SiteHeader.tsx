@@ -20,7 +20,7 @@ export function SiteHeader({ locale, settings, translatedPaths, detail }: {
   const t = (text: string) => homeText(locale, text)
   const labels = settings.navigation
   const items = [
-    [sectionCopy(locale, 'solutions').label, '/solutions'],
+    [labels?.solutions || sectionCopy(locale, 'solutions').label, '/solutions'],
     [labels?.capabilities || t('Capabilities'), '/capabilities'], [labels?.about || t('About'), '/about'],
     [labels?.stories || t('Stories'), '/stories'], [labels?.resources || t('Resources'), '/resources'],
   ]

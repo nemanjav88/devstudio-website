@@ -103,15 +103,26 @@
 .gallery-open:focus-visible { outline: 2px solid var(--ink); outline-offset: 5px; box-shadow: 0 0 0 4px var(--yellow); }
 .media-lightbox { position: fixed; inset: 0; width: 100%; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--ink); color: var(--paper); overscroll-behavior: contain; }
 .media-lightbox::backdrop { background: var(--ink); }
-.media-lightbox-layout { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
-.media-lightbox-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.media-lightbox-layout { display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; gap: clamp(10px, 1.8vh, 20px); height: 100%; padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+.media-lightbox-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: min(1180px, 100%); justify-self: center; }
 .media-lightbox-control { display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid var(--line); background: transparent; color: inherit; font-size: 26px!important; }
 .media-lightbox-control:disabled { opacity: .25; cursor: default; }
 .media-lightbox-control:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
-.media-lightbox-stage { min-height: 0; min-width: 0; touch-action: pan-y pinch-zoom; }
+.media-lightbox-stage-row { position: relative; min-height: 0; min-width: 0; width: min(1180px, 100%); justify-self: center; }
+.media-lightbox-stage { height: 100%; min-height: 0; min-width: 0; touch-action: pan-y pinch-zoom; }
 .solution-media--lightbox { height: 100%; background: transparent; padding: clamp(12px, 2vw, 28px); }
-.media-lightbox-footer { display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; gap: clamp(12px, 3vw, 40px); align-items: center; }
-.media-lightbox-caption { font: 12px/1.6 "Courier New", monospace; text-align: center; overflow-wrap: anywhere; max-height: min(160px, 24dvh); overflow-y: auto; overscroll-behavior: contain; }
+.media-lightbox-nav { position: absolute; top: 50%; z-index: 1; transform: translateY(-50%); background: #111210d9; }
+.media-lightbox-nav--previous { left: 0; }
+.media-lightbox-nav--next { right: 0; }
+.media-lightbox-caption { width: min(880px, 100%); justify-self: center; font: 12px/1.6 "Courier New", monospace; text-align: center; overflow-wrap: anywhere; max-height: min(92px, 15dvh); overflow-y: auto; overscroll-behavior: contain; }
+.media-lightbox-thumbnails { display: flex; width: min(1180px, 100%); justify-self: center; gap: 9px; overflow-x: auto; overscroll-behavior-x: contain; padding: 2px max(2px, calc((100% - 720px) / 2)); scroll-snap-type: x proximity; scrollbar-color: #777a72 transparent; }
+.media-lightbox-thumbnail { flex: 0 0 clamp(62px, 7vw, 88px); aspect-ratio: 4 / 3; padding: 0; border: 1px solid #5b5e55; background: var(--paper); opacity: .58; scroll-snap-align: center; }
+.media-lightbox-thumbnail:hover,.media-lightbox-thumbnail[aria-current="true"] { opacity: 1; border-color: var(--yellow); }
+.media-lightbox-thumbnail:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; opacity: 1; }
+.media-lightbox-thumbnail .solution-media--lightbox-thumbnail { width: 100%; height: 100%; padding: 4px; background: var(--paper); }
+.media-lightbox-thumbnail .content-image { max-width: 100%; max-height: 100%; }
+@media(prefers-reduced-motion:no-preference) { .media-lightbox-thumbnail { transition: opacity .18s, border-color .18s; } }
+@media(max-width:580px) { .media-lightbox-layout { gap: 10px; } .media-lightbox-caption { max-height: 64px; font-size: 11px; } .media-lightbox-thumbnails { gap: 7px; padding-inline: 2px; } .media-lightbox-thumbnail { flex-basis: 68px; } .media-lightbox-nav { width: 44px; height: 44px; font-size: 22px!important; } }
 @media(max-width:1100px) { .content-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media(max-width:580px) { .content-gallery-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
 .related-content,.detail-downloads { background: var(--paper); color: var(--ink); }

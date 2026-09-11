@@ -19,5 +19,6 @@ test('external, unversioned, animated and unsafe sources keep direct delivery', 
 test('responsive source hints follow existing card and gallery breakpoints', () => {
   assert.equal(mediaImageSizes('solution-card'), '(max-width: 580px) 88vw, 28vw')
   assert.equal(mediaImageSizes('gallery-tile'), '(max-width: 580px) 88vw, (max-width: 1100px) 44vw, 29vw')
+  assert.equal(mediaImageSizes('lightbox-thumbnail'), '88px')
   assert.equal(mediaImageSizes('lightbox'), '94vw')
 })

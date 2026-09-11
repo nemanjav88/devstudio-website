@@ -43,6 +43,8 @@ test('gallery keeps valid media order, full dimensions, and localized controls',
     const html = renderToStaticMarkup(createElement(ContentGallery, { gallery, locale }))
     assert.equal((html.match(/class="gallery-open"/g) || []).length, 2)
     assert.equal((html.match(/solution-media--gallery-tile solution-media--contain/g) || []).length, 2)
+    assert.equal((html.match(/class="media-lightbox-thumbnail"/g) || []).length, 2)
+    assert.equal((html.match(/solution-media--lightbox-thumbnail solution-media--contain/g) || []).length, 2)
     assert.match(html, /Gallery caption &lt;safe&gt;/)
     assert.match(html, /Media caption/)
     assert.match(html, /width="1672" height="941"/)
@@ -58,6 +60,17 @@ test('empty galleries disappear and single-image navigation is disabled', () => 
   assert.equal(renderToStaticMarkup(createElement(ContentGallery, { locale: 'en', gallery: [] })), '')
   const html = renderToStaticMarkup(createElement(ContentGallery, { locale: 'en', gallery: [{ image: asset(1, 100, 100) }] }))
   assert.equal((html.match(/disabled=""/g) || []).length, 2)
+  assert.equal((html.match(/class="media-lightbox-thumbnail"/g) || []).length, 1)
+})
+
+test('lightbox provides a selectable overview rail for every valid gallery image', () => {
+  const gallery = [asset(1, 400, 600), asset(2, 1200, 800), asset(3, 800, 1200), asset(4, 1600, 900)].map(image => ({ image }))
+  const html = renderToStaticMarkup(createElement(ContentGallery, { locale: 'en', gallery }))
+  assert.equal((html.match(/class="media-lightbox-thumbnail"/g) || []).length, 4)
+  assert.equal((html.match(/solution-media--lightbox-thumbnail solution-media--contain/g) || []).length, 4)
+  assert.match(html, /class="media-lightbox-stage-row"/)
+  assert.match(html, /aria-controls="[^" ]+-stage"/)
+  assert.doesNotMatch(html, /media-lightbox-footer/)
 })
 
 test('all retail listing geometries use the shared contain stage; editorial hero cover remains available', () => {

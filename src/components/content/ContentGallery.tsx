@@ -20,6 +20,7 @@ export function ContentGallery({ gallery, locale }: { gallery: Project['gallery'
   const dialog = useRef<HTMLDialogElement>(null)
   const closeButton = useRef<HTMLButtonElement>(null)
   const opener = useRef<HTMLButtonElement | null>(null)
+  const thumbnails = useRef<(HTMLButtonElement | null)[]>([])
   const touch = useRef<{ x: number; y: number } | null>(null)
   const [selected, setSelected] = useState<number | null>(null)
   const current = selected === null ? undefined : items[selected]
@@ -52,7 +53,16 @@ export function ContentGallery({ gallery, locale }: { gallery: Project['gallery'
     }
   }, [isOpen])
 
+  useEffect(() => {
+    if (!isOpen || selected === null) return
+    const activeThumbnail = thumbnails.current[selected]
+    if (!activeThumbnail) return
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    activeThumbnail.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reducedMotion ? 'auto' : 'smooth' })
+  }, [isOpen, selected])
+
   function move(direction: number) {
+    if (items.length < 2) return
     setSelected(index => index === null ? null : (index + direction + items.length) % items.length)
   }
 
@@ -84,7 +94,9 @@ export function ContentGallery({ gallery, locale }: { gallery: Project['gallery'
           <span className="meta" role="status" aria-live="polite" aria-atomic="true">{selected === null ? '' : `${selected + 1} / ${items.length}`}</span>
           <button type="button" ref={closeButton} className="media-lightbox-control" aria-label={labels.closeGallery} onClick={() => setSelected(null)}>×</button>
         </div>
-        <div className="media-lightbox-stage"
+        <div className="media-lightbox-stage-row">
+          <button type="button" className="media-lightbox-control media-lightbox-nav media-lightbox-nav--previous" aria-label={labels.previousImage} disabled={items.length < 2} onClick={() => move(-1)}>←</button>
+          <div className="media-lightbox-stage" id={`${id}-stage`}
           onPointerDown={event => { if (event.pointerType === 'touch' && event.isPrimary) touch.current = { x: event.clientX, y: event.clientY } }}
           onPointerCancel={() => { touch.current = null }}
           onPointerUp={event => {
@@ -96,11 +108,17 @@ export function ContentGallery({ gallery, locale }: { gallery: Project['gallery'
             if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) move(dx < 0 ? 1 : -1)
           }}>
           {current && <ContentMedia key={current.key} media={current.media} presentation="lightbox" eager />}
+          </div>
+          <button type="button" className="media-lightbox-control media-lightbox-nav media-lightbox-nav--next" aria-label={labels.nextImage} disabled={items.length < 2} onClick={() => move(1)}>→</button>
         </div>
-        <div className="media-lightbox-footer">
-          <button type="button" className="media-lightbox-control" aria-label={labels.previousImage} disabled={items.length < 2} onClick={() => move(-1)}>←</button>
-          <div className="media-lightbox-caption" id={`${id}-caption`} key={current?.key} tabIndex={current?.caption ? 0 : undefined}>{current?.caption}</div>
-          <button type="button" className="media-lightbox-control" aria-label={labels.nextImage} disabled={items.length < 2} onClick={() => move(1)}>→</button>
+        <div className="media-lightbox-caption" id={`${id}-caption`} key={current?.key} tabIndex={current?.caption ? 0 : undefined}>{current?.caption}</div>
+        <div className="media-lightbox-thumbnails" aria-label={labels.gallery}>
+          {items.map((item, index) => <button type="button" className="media-lightbox-thumbnail" key={item.key}
+            ref={element => { thumbnails.current[index] = element }} aria-current={selected === index ? 'true' : undefined}
+            aria-label={`${labels.openImage}: ${item.media.alt || index + 1} (${index + 1} / ${items.length})`} aria-controls={`${id}-stage`}
+            onClick={() => setSelected(index)}>
+            <span aria-hidden="true"><ContentMedia media={item.media} presentation="lightbox-thumbnail" /></span>
+          </button>)}
         </div>
       </div>
     </dialog>
