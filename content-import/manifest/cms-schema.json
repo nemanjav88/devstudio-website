@@ -38,7 +38,7 @@
     },
     {
       "file": "src/payload.config.ts",
-      "sha256": "f99ed2eb931fae5c42926aca0b37dc68370e5adbef49b747b6b1770f2e111c0f"
+      "sha256": "2e17db26a5bc329e4cc2eb30a5c502cf12c0b66063589207ae78bdb627294c4a"
     },
     {
       "file": "src/access/content.ts",

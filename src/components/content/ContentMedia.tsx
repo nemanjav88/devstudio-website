@@ -5,6 +5,7 @@ import { populated, safeHref } from '@/lib/content'
 import type { Locale } from '@/lib/i18n'
 import { ui } from '@/lib/section-copy'
 import { mediaPresentation, type MediaPresentationContext } from '@/lib/media-presentation'
+import { mediaImageSource, mediaImageSizes } from '@/lib/media-delivery'
 
 export function ContentMedia({ media, alt = '', eager = false, presentation }: { media?: Media | number | null; alt?: string; eager?: boolean; presentation?: MediaPresentationContext }) {
   const asset = populated(media)
@@ -13,9 +14,19 @@ export function ContentMedia({ media, alt = '', eager = false, presentation }: {
   const strategy = presentation ? mediaPresentation(asset, presentation) : undefined
   const video = asset.mimeType?.startsWith('video/')
   if (!video && !asset.mimeType?.startsWith('image/')) return null
+  const imageSource = mediaImageSource(asset)
+  // Responsive candidates change naturalWidth (especially on high-DPR screens).
+  // Retain the source's intrinsic size so the existing auto/max-size rules paint
+  // precisely the same contained image and reserve its space before decoding.
+  const containedSize: CSSProperties = strategy?.fit === 'contain' ? {
+    width: 'auto', height: 'auto', aspectRatio: 'auto',
+    ...(!imageSource.unoptimized ? {
+      contain: 'size', containIntrinsicSize: `${strategy.width}px ${strategy.height}px`, aspectRatio: `${strategy.width} / ${strategy.height}`,
+    } : {}),
+  } : {}
   const element = video ? <video className="content-image" controls playsInline preload="metadata" aria-label={asset.alt || alt}><source src={src} type={asset.mimeType!} /></video>
-    : <Image className="content-image" src={src} alt={asset.alt || alt} width={asset.width || 1600} height={asset.height || 1000}
-      unoptimized loading={eager ? 'eager' : 'lazy'} style={{ ...(strategy?.fit === 'contain' ? { width: 'auto', height: 'auto', aspectRatio: 'auto' } : {}), objectPosition: strategy?.fit === 'contain' ? '50% 50%' : `${asset.focalX ?? 50}% ${asset.focalY ?? 50}%` }} />
+    : <Image className="content-image" {...imageSource} alt={asset.alt || alt} width={asset.width || 1600} height={asset.height || 1000}
+      sizes={mediaImageSizes(presentation)} loading={eager ? 'eager' : 'lazy'} fetchPriority={eager ? 'high' : undefined} style={{ ...containedSize, objectPosition: strategy?.fit === 'contain' ? '50% 50%' : `${asset.focalX ?? 50}% ${asset.focalY ?? 50}%` }} />
   if (!strategy) return element
   return <div className={`solution-media solution-media--${presentation} solution-media--${strategy.fit}`}
     style={{ '--media-width': `${strategy.width || 640}px`, '--media-height': `${strategy.height || 480}px`, '--media-ratio': strategy.ratio || 16 / 9 } as CSSProperties}>

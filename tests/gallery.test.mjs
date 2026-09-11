@@ -71,4 +71,18 @@ test('all retail listing geometries use the shared contain stage; editorial hero
   assert.match(lightbox, /solution-media--lightbox solution-media--contain/)
 })
 
+test('versioned Payload images use responsive optimization without changing contain sizing inputs', () => {
+  const media = { ...asset(1, 397, 758), url: '/api/media/file/product.png', updatedAt: '2026-09-11T09:15:59.355Z' }
+  const html = renderToStaticMarkup(createElement(ContentMedia, { media, presentation: 'gallery-tile' }))
+  assert.match(html, /srcSet=/)
+  assert.match(html, /%2Fapi%2Fmedia%2Ffile%2Fproduct.png%3Fv%3D1789118159355/)
+  assert.match(html, /loading="lazy"/)
+  assert.match(html, /contain-intrinsic-size:397px 758px/)
+  assert.match(html, /aspect-ratio:397 \/ 758/)
+  assert.match(html, /width="397" height="758"/)
+  const eager = renderToStaticMarkup(createElement(ContentMedia, { media, eager: true, presentation: 'solution-hero' }))
+  assert.match(eager, /loading="eager"/)
+  assert.match(eager, /fetchPriority="high"/)
+})
+
 test.after(() => hooks.deregister())

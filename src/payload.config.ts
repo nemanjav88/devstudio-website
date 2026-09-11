@@ -14,6 +14,7 @@ import { Clients } from './collections/Clients'
 import { Media } from './collections/Media'
 import { SiteSettings } from './globals/SiteSettings'
 import { Homepage } from './globals/Homepage'
+import { withMediaCache } from './lib/media-cache'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -30,7 +31,7 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: dirname },
   },
-  collections: [Users, Projects, Stories, Solutions, Downloads, Clients, Media],
+  collections: [Users, Projects, Stories, Solutions, Downloads, Clients, withMediaCache(Media)],
   globals: [SiteSettings, Homepage],
   editor: lexicalEditor(),
   sharp,
