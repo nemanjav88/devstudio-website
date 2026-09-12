@@ -2,7 +2,7 @@
   "sourceFiles": [
     {
       "file": "src/collections/Solutions.ts",
-      "sha256": "0512bff67b314ac2a8be930d676a162313d123797b6042d2fe1772cf3bd504d5"
+      "sha256": "369ce59f485f76a65e0c570178955cb3407693c9ddcc8aa100c14b100b3e7176"
     },
     {
       "file": "src/collections/Projects.ts",
@@ -83,19 +83,19 @@
           "index": true,
           "options": [
             {
-              "label": "Digital & Retail",
+              "label": "Retail Technology & Digital Systems",
               "value": "digital-retail"
             },
             {
-              "label": "Brand Experiences",
+              "label": "Brand Experiences & Activations",
               "value": "brand-experiences"
             },
             {
-              "label": "Entertainment",
+              "label": "Dev Studio Products",
               "value": "entertainment"
             },
             {
-              "label": "Custom Engineering",
+              "label": "Custom Products & Interactive Systems",
               "value": "custom-engineering"
             },
             {

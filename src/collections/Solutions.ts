@@ -10,10 +10,10 @@ export const Solutions: CollectionConfig = {
   fields: [
     title(), slug(),
     { name: 'solutionGroup', type: 'select', required: true, index: true, options: [
-      { label: 'Digital & Retail', value: 'digital-retail' },
-      { label: 'Brand Experiences', value: 'brand-experiences' },
-      { label: 'Entertainment', value: 'entertainment' },
-      { label: 'Custom Engineering', value: 'custom-engineering' },
+      { label: 'Retail Technology & Digital Systems', value: 'digital-retail' },
+      { label: 'Brand Experiences & Activations', value: 'brand-experiences' },
+      { label: 'Dev Studio Products', value: 'entertainment' },
+      { label: 'Custom Products & Interactive Systems', value: 'custom-engineering' },
       { label: 'Production', value: 'production' },
     ] },
     { name: 'shortDescription', type: 'textarea', localized: true },

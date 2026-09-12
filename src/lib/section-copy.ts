@@ -19,8 +19,8 @@ const copy = {
     noFilesBody: 'Try another language or material type, or contact us for the information you need.',
     catalog: 'Complete catalog', 'product-flyer': 'Products & flyers',
     'thematic-brochure': 'Thematic brochures', publication: 'Published', overview: 'Overview',
-    'digital-retail': 'Retail Technology & Digital Systems', 'brand-experiences': 'Brand Experiences', entertainment: 'Interactive Entertainment',
-    'custom-engineering': 'Custom Engineering', production: 'Production & Fabrication',
+    'digital-retail': 'Retail Technology & Digital Systems', 'brand-experiences': 'Brand Experiences & Activations', entertainment: 'Dev Studio Products',
+    'custom-engineering': 'Custom Products & Interactive Systems', production: 'Production & Fabrication',
     'project-story': 'Project Story', video: 'Video', news: 'News', technology: 'Technology', 'behind-the-build': 'Behind the Build', 'case-study': 'Case Study',
   },
   bhs: {
@@ -40,8 +40,8 @@ const copy = {
     noFilesBody: 'Pokušajte sa drugim jezikom ili vrstom materijala, ili nas kontaktirajte za potrebne informacije.',
     catalog: 'Kompletan katalog', 'product-flyer': 'Proizvodi i flajeri',
     'thematic-brochure': 'Tematske brošure', publication: 'Objavljeno', overview: 'Pregled',
-    'digital-retail': 'Retail tehnologija i digitalni sistemi', 'brand-experiences': 'Brend iskustva', entertainment: 'Interaktivna zabava',
-    'custom-engineering': 'Custom inženjering', production: 'Proizvodnja i izrada',
+    'digital-retail': 'Retail tehnologija i digitalni sistemi', 'brand-experiences': 'Brend iskustva i aktivacije', entertainment: 'Dev Studio proizvodi',
+    'custom-engineering': 'Custom proizvodi i interaktivni sistemi', production: 'Proizvodnja i izrada',
     'project-story': 'Priča o projektu', video: 'Video', news: 'Novosti', technology: 'Tehnologija', 'behind-the-build': 'Iza izrade', 'case-study': 'Studija slučaja',
   },
 }

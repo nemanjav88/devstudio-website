@@ -10,6 +10,7 @@ import { localizedHref } from '@/lib/i18n'
 import { homeText } from '@/lib/home-copy'
 import type { HomeCmsData } from '@/lib/homepage-types'
 import { mediaURL, projectTitle, storyData } from '@/lib/homepage-types'
+import { publicSolutionGroupForHomepageCategory, type PublicSolutionGroup } from '@/lib/public-solution-groups'
 
 const baseWork = [
   { title: 'Smart Retail', kind: 'retail', label: 'DIGITAL MEETS PHYSICAL', text: 'Exploring the space between a digital interface and a physical retail experience.' },
@@ -31,22 +32,10 @@ const baseStories = [
 ]
 const solutionGroupLinks = [
   ['digital-retail', 'Retail Technology & Digital Systems'],
-  ['brand-experiences', 'Brand Experiences'],
-  ['entertainment', 'Interactive Entertainment'],
-  ['custom-engineering', 'Custom Engineering'],
-  ['production', 'Production & Fabrication'],
-] as const
-type SolutionGroup = typeof solutionGroupLinks[number][0]
-
-function solutionGroupForCategory(name: string, index: number): SolutionGroup | undefined {
-  const normalized = name.toLocaleLowerCase()
-  if (normalized.includes('retail') || normalized.includes('maloprod')) return 'digital-retail'
-  if (normalized.includes('brand') || normalized.includes('brend')) return 'brand-experiences'
-  if (normalized.includes('entertain') || normalized.includes('zabav') || normalized.includes('interaktiv')) return 'entertainment'
-  if (normalized.includes('custom') || normalized.includes('mjeri')) return 'custom-engineering'
-  if (normalized.includes('manufactur') || normalized.includes('proizvod') || normalized.includes('fabricat') || normalized.includes('izrad')) return 'production'
-  return solutionGroupLinks[index]?.[0]
-}
+  ['brand-experiences', 'Brand Experiences & Activations'],
+  ['custom-engineering', 'Custom Products & Interactive Systems'],
+  ['entertainment', 'Dev Studio Products'],
+] as const satisfies readonly (readonly [PublicSolutionGroup, string])[]
 
 function Arrow() { return <span aria-hidden="true">↗</span> }
 
@@ -86,9 +75,9 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
     ? home.process.steps.map((step, index) => [step.title || steps[index]?.[0] || '', step.description || steps[index]?.[1] || ''] as [string, string])
     : steps
   const buildItems = (home?.whatWeBuild?.categories?.length
-    ? home.whatWeBuild.categories.map((category, index) => ({ name: category.name, group: category.name ? solutionGroupForCategory(category.name, index) : undefined }))
+    ? home.whatWeBuild.categories.map(category => ({ name: category.name, group: category.name ? publicSolutionGroupForHomepageCategory(category.name) : undefined }))
     : solutionGroupLinks.map(([group, name]) => ({ name: t(name), group })))
-    .filter((item): item is { name: string; group: SolutionGroup } => Boolean(item.name && item.group))
+    .filter((item): item is { name: string; group: PublicSolutionGroup } => Boolean(item.name && item.group))
     .filter((item, index, items) => items.findIndex(candidate => candidate.group === item.group) === index)
   const madeMedia = mediaURL(home?.madeHere?.media)
   const ownProductsMedia = mediaURL(home?.ownProducts?.media)

@@ -4,6 +4,7 @@ import type { Download, Project, Solution, Story } from '@/payload-types'
 import { coverMedia, description, pageNumber, populated, type EditorialCollection, type SearchParams, type Section } from '@/lib/content'
 import { findAllSolutions, findDownloads, findEditorial, getDetail, getRelated } from '@/lib/content-data'
 import { languageAlternates, localizedHref, type Locale } from '@/lib/i18n'
+import { publicSolutionGroups } from '@/lib/public-solution-groups'
 import { sectionCopy, ui } from '@/lib/section-copy'
 import { ContentShell } from './ContentShell'
 import { ContentMedia, ContentVideo, Gallery } from './ContentMedia'
@@ -38,12 +39,10 @@ function SectionIntro({ section, locale }: { section: Section; locale: Locale })
   </header>
 }
 
-const solutionGroups = ['digital-retail', 'brand-experiences', 'entertainment', 'custom-engineering', 'production'] as const
-
 function GroupedSolutions({ docs, locale }: { docs: Solution[]; locale: Locale }) {
   const labels = ui(locale)
   return <div className="solution-groups">
-    {solutionGroups.map(group => {
+    {publicSolutionGroups.map(group => {
       const groupDocs = docs.filter(doc => doc.solutionGroup === group)
       if (!groupDocs.length) return null
       return <section className="solution-group" id={group} aria-labelledby={`${group}-heading`} key={group}>

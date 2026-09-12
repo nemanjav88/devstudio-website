@@ -51,8 +51,14 @@ const hooks = registerHooks({
 const { findAllSolutions, findEditorial } = await import('../src/lib/content-data.ts')
 const { IndexPage, indexMetadata } = await import('../src/components/content/SectionPages.tsx')
 const { localizedHref } = await import('../src/lib/i18n.ts')
+const { publicSolutionGroups, publicSolutionGroupForHomepageCategory } = await import('../src/lib/public-solution-groups.ts')
 const manifest = JSON.parse(readFileSync(new URL('../content-import/manifest/catalog-content.json', import.meta.url), 'utf8'))
-const counts = { 'digital-retail': 4, 'brand-experiences': 2, entertainment: 2, 'custom-engineering': 2, production: 3 }
+const counts = { 'digital-retail': 5, 'brand-experiences': 3, 'custom-engineering': 3, entertainment: 1 }
+const reassignedGroups = {
+  'impressive-custom-shelves': 'digital-retail',
+  'interactive-promotional-games': 'brand-experiences',
+  'custom-furniture-equipment': 'custom-engineering',
+}
 
 async function localizedRecords(locale) {
   if (process.env.SOLUTIONS_TEST_LIVE === '1') {
@@ -64,10 +70,16 @@ async function localizedRecords(locale) {
     assert.equal(data.docs.length, data.totalDocs)
     return data.docs
   }
-  return manifest.solutions.map((doc, index) => ({ id: index + 1, ...doc.locales[locale], solutionGroup: doc.solutionGroup, _status: 'published' })).sort((a, b) => a.title.localeCompare(b.title))
+  return manifest.solutions.map((doc, index) => ({
+    id: index + 1,
+    key: doc.key,
+    ...doc.locales[locale],
+    solutionGroup: reassignedGroups[doc.key] || doc.solutionGroup,
+    _status: 'published',
+  })).sort((a, b) => a.title.localeCompare(b.title))
 }
 
-test('Solutions index renders complete groups in both locales, including legacy page URLs', async () => {
+test('Solutions index renders the four finalized public groups in both locales', async () => {
   for (const locale of ['bhs', 'en']) {
     const publicLabel = locale === 'bhs' ? 'Šta stvaramo' : 'What We Build'
     records = await localizedRecords(locale)
@@ -88,6 +100,11 @@ test('Solutions index renders complete groups in both locales, including legacy 
         { slug: { exists: true } }, { slug: { not_equals: '' } },
       ])
       assert.doesNotMatch(html, /content-pagination/)
+      assert.equal((html.match(/<article /g) || []).length, 12)
+      assert.doesNotMatch(html, /id="production"/)
+      const groupPositions = publicSolutionGroups.map(group => html.indexOf(`id="${group}"`))
+      assert.ok(groupPositions.every(position => position >= 0))
+      assert.ok(groupPositions.every((position, index) => index === 0 || position > groupPositions[index - 1]))
       for (const [group, count] of Object.entries(counts)) {
         const section = html.match(new RegExp(`<section class="solution-group" id="${group}"[^>]*>([\\s\\S]*?)</section>`))?.[1]
         assert.ok(section, group)
@@ -97,6 +114,15 @@ test('Solutions index renders complete groups in both locales, including legacy 
         }
         assert.equal(localizedHref(`/solutions#${group}`, locale), `${locale === 'en' ? '/en' : ''}/solutions#${group}`)
       }
+      const manufacturingSlug = locale === 'bhs' ? 'proizvodnja-po-narudzbi' : 'custom-manufacturing'
+      const manufacturing = records.find(doc => doc.slug === manufacturingSlug)
+      assert.equal(manufacturing?.solutionGroup, 'production')
+      assert.equal(localizedHref(`/solutions/${manufacturingSlug}`, locale), `${locale === 'en' ? '/en' : ''}/solutions/${manufacturingSlug}`)
+      assert.doesNotMatch(html, new RegExp(`href="${localizedHref(`/solutions/${manufacturingSlug}`, locale)}"`))
+      const finalizedAssignments = locale === 'bhs'
+        ? [['impresivne-police-po-mjeri', 'digital-retail'], ['interaktivne-promotivne-igre', 'brand-experiences'], ['mobilijar-i-oprema-po-mjeri', 'custom-engineering'], ['kids-play', 'entertainment']]
+        : [['impressive-custom-shelves', 'digital-retail'], ['interactive-promotional-games', 'brand-experiences'], ['custom-furniture-equipment', 'custom-engineering'], ['kids-play', 'entertainment']]
+      for (const [slug, group] of finalizedAssignments) assert.equal(records.find(doc => doc.slug === slug)?.solutionGroup, group)
       const metadata = await indexMetadata('solutions', locale, Promise.resolve({ page }))
       assert.equal(metadata.title, `${publicLabel} — Dev Studio`)
       assert.equal(metadata.alternates.canonical, localizedHref('/solutions', locale))
@@ -106,7 +132,7 @@ test('Solutions index renders complete groups in both locales, including legacy 
 })
 
 test('Solutions stay complete as CMS grows; other editorial queries remain paginated', async () => {
-  records = Array.from({ length: 125 }, (_, id) => ({ id, title: `Solution ${id}`, slug: `solution-${id}`, solutionGroup: Object.keys(counts)[id % 5], _status: 'published' }))
+  records = Array.from({ length: 125 }, (_, id) => ({ id, title: `Solution ${id}`, slug: `solution-${id}`, solutionGroup: [...publicSolutionGroups, 'production'][id % 5], _status: 'published' }))
   assert.equal((await findAllSolutions('bhs')).docs.length, 125)
   for (const collection of ['projects', 'stories', 'solutions']) {
     assert.equal((await findEditorial(collection, 'en', 2)).docs.length, 8)
@@ -115,6 +141,23 @@ test('Solutions stay complete as CMS grows; other editorial queries remain pagin
   }
   records.push({ id: 126, _status: 'draft' })
   assert.equal((await findAllSolutions('en')).docs.length, 125)
+})
+
+test('Homepage categories use explicit finalized BHS and EN mappings', () => {
+  assert.deepEqual(publicSolutionGroups, ['digital-retail', 'brand-experiences', 'custom-engineering', 'entertainment'])
+  for (const [name, group] of [
+    ['Retail Technology & Digital Systems', 'digital-retail'],
+    ['Brand Experiences & Activations', 'brand-experiences'],
+    ['Custom Products & Interactive Systems', 'custom-engineering'],
+    ['Dev Studio Products', 'entertainment'],
+    ['Retail tehnologija i digitalni sistemi', 'digital-retail'],
+    ['Brend iskustva i aktivacije', 'brand-experiences'],
+    ['Custom proizvodi i interaktivni sistemi', 'custom-engineering'],
+    ['Dev Studio proizvodi', 'entertainment'],
+  ]) assert.equal(publicSolutionGroupForHomepageCategory(name), group)
+  assert.equal(publicSolutionGroupForHomepageCategory('Production & Fabrication'), undefined)
+  assert.equal(publicSolutionGroupForHomepageCategory('Custom proizvodi i interaktivni sistemi'), 'custom-engineering')
+  assert.equal(publicSolutionGroupForHomepageCategory('Dev Studio proizvodi'), 'entertainment')
 })
 
 test('empty and unavailable CMS remain supported', async () => {
