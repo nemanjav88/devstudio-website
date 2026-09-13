@@ -184,7 +184,8 @@
 .about-split { display: grid; grid-template-columns: 1fr 1fr; gap: 9%; align-items: center; }
 .about-copy h2 { margin-bottom: 32px!important; }
 .about-copy > p:last-child { max-width: 610px; }
-.media-placeholder--tall { min-height: 590px; }
+.about-workshop-media { position: relative; overflow: hidden; min-height: 590px; }
+.about-workshop-media > img { object-fit: cover; }
 .about-principles { padding-bottom: 100px; }
 .principle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 35px; }
 .principle-grid > div { border-top: 1px solid #11121066; padding-top: 18px; }
@@ -225,6 +226,7 @@
   .capability-row h3 { font-size: 30px; }
   .capability-media-band { padding-block: 55px; }
   .media-placeholder { min-height: 350px; }
+  .about-workshop-media { min-height: 350px; }
   .about-statement h2 { font-size: 10vw; }
   .about-statement > p { margin-left: 0; font-size: 16px; }
   .principle-grid { grid-template-columns: 1fr; gap: 35px; }
