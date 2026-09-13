@@ -78,7 +78,6 @@ body { margin: 0; background: var(--ink); }
 .work-solution-image { object-fit: contain; }
 .work-description { max-width: 520px; margin-top: 12px; color: #a9aca1; font-size: 14px; line-height: 1.6; }
 .references-image { display: block; width: 100%; height: auto; object-fit: contain; }
-.references-placeholder-note { font: 11px "Courier New", monospace; color: #596052; }
 .references-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; margin-top: 30px; }
 .reference-mark { display: flex; align-items: center; justify-content: center; min-height: 95px; color: #596052; font: 22px "Courier New", monospace; }
 .reference-mark-1 { font-family: Arial, sans-serif; font-weight: 700; letter-spacing: -.06em; }

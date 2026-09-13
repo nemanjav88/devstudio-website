@@ -26,7 +26,7 @@
     },
     {
       "file": "src/globals/Homepage.ts",
-      "sha256": "83a503146794136bcf466332d14656d48714f5a2f3627f3a4468d24cd33c7ea7"
+      "sha256": "724bbbc2bb429b150dfbe28746c774ab370124f3cd82e0249a17e81933600618"
     },
     {
       "file": "src/globals/SiteSettings.ts",
@@ -757,6 +757,7 @@
               "type": "relationship",
               "relationTo": "solutions",
               "hasMany": true,
+              "minRows": 4,
               "maxRows": 4
             },
             {

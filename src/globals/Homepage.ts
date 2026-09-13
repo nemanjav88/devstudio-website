@@ -36,7 +36,7 @@ export const Homepage: GlobalConfig = {
     {
       name: 'selectedWork', type: 'group', fields: [
         localizedText('headline', 'Headline'), localizedTextarea('intro', 'Intro'),
-        { name: 'solutions', type: 'relationship', relationTo: 'solutions', hasMany: true, maxRows: 4 },
+        { name: 'solutions', type: 'relationship', relationTo: 'solutions', hasMany: true, minRows: 4, maxRows: 4 },
         { name: 'projects', type: 'relationship', relationTo: 'projects', hasMany: true, maxRows: 4, admin: { hidden: true } },
       ],
     },

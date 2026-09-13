@@ -135,7 +135,6 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
         <div className="section-label"><span>{t("07 / REFERENCES")}</span><span>+</span></div>
         <div className="section-heading"><h2>{home?.references?.headline || t("REFERENCES")}</h2>{home?.references?.intro && <p>{home.references.intro}</p>}</div>
         {referencesMedia ? <Image className="references-image" {...mediaImageSource(referencesMedia)} alt={referencesMedia.alt || t("REFERENCES")} width={referencesMedia.width || 1600} height={referencesMedia.height || 1000} sizes="100vw" /> : <>
-          <p className="references-placeholder-note">{t("Temporary reference placeholders")}</p>
           <div className="references-grid" aria-label={t("Temporary reference placeholders")}>{Array.from({ length: 20 }, (_, i) => <span className={`reference-mark reference-mark-${i % 4}`} key={i}>REF {String(i + 1).padStart(2, '0')}</span>)}</div>
         </>}
       </section>
