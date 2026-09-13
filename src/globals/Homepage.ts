@@ -36,7 +36,8 @@ export const Homepage: GlobalConfig = {
     {
       name: 'selectedWork', type: 'group', fields: [
         localizedText('headline', 'Headline'), localizedTextarea('intro', 'Intro'),
-        { name: 'projects', type: 'relationship', relationTo: 'projects', hasMany: true, maxRows: 4 },
+        { name: 'solutions', type: 'relationship', relationTo: 'solutions', hasMany: true, maxRows: 4 },
+        { name: 'projects', type: 'relationship', relationTo: 'projects', hasMany: true, maxRows: 4, admin: { hidden: true } },
       ],
     },
     {
@@ -72,6 +73,11 @@ export const Homepage: GlobalConfig = {
       name: 'latestFromTheStudio', type: 'group', fields: [
         localizedText('headline', 'Headline'), localizedTextarea('intro', 'Intro'),
         { name: 'stories', type: 'relationship', relationTo: 'stories', hasMany: true, maxRows: 3 },
+      ],
+    },
+    {
+      name: 'references', type: 'group', fields: [
+        localizedText('headline', 'Headline'), localizedTextarea('intro', 'Intro'), image('media'),
       ],
     },
     {

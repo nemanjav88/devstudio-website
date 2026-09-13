@@ -1,4 +1,4 @@
-import type { Homepage, Media, Project, SiteSetting, Story } from '../payload-types'
+import type { Homepage, Media, Solution, SiteSetting } from '../payload-types'
 import type { Locale } from './i18n'
 
 export type HomeLocale = Locale
@@ -20,12 +20,14 @@ function populated<T>(value: number | T | null | undefined): T | undefined {
   return typeof value === 'object' && value !== null ? value as T : undefined
 }
 
-export function projectTitle(value: number | Project | null | undefined): string | undefined {
-  return populated<Project>(value)?.title
+export function selectedSolutions(values?: (number | Solution)[] | null): Solution[] {
+  return (values || []).map(value => populated<Solution>(value))
+    .filter((value): value is Solution => Boolean(value?.title && value.slug && value._status === 'published')).slice(0, 4)
 }
 
-export function storyData(value: number | Story): Story | undefined {
-  return populated<Story>(value)
+export function homepageImage(value: number | Media | null | undefined): Media | undefined {
+  const asset = populated<Media>(value)
+  return asset?.mimeType?.startsWith('image/') && asset.url ? asset : undefined
 }
 
 export function mediaURL(value: number | Media | null | undefined): string | undefined {

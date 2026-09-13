@@ -26,7 +26,7 @@
     },
     {
       "file": "src/globals/Homepage.ts",
-      "sha256": "87fe35f48ed3e21a0ff40fd169de273bce84c4d088c86b1737977341b80e45cd"
+      "sha256": "83a503146794136bcf466332d14656d48714f5a2f3627f3a4468d24cd33c7ea7"
     },
     {
       "file": "src/globals/SiteSettings.ts",
@@ -753,6 +753,13 @@
               "localized": true
             },
             {
+              "name": "solutions",
+              "type": "relationship",
+              "relationTo": "solutions",
+              "hasMany": true,
+              "maxRows": 4
+            },
+            {
               "name": "projects",
               "type": "relationship",
               "relationTo": "projects",
@@ -940,6 +947,34 @@
               "relationTo": "stories",
               "hasMany": true,
               "maxRows": 3
+            }
+          ]
+        },
+        {
+          "name": "references",
+          "type": "group",
+          "fields": [
+            {
+              "name": "headline",
+              "label": "Headline",
+              "type": "text",
+              "localized": true
+            },
+            {
+              "name": "intro",
+              "label": "Intro",
+              "type": "textarea",
+              "localized": true
+            },
+            {
+              "name": "media",
+              "type": "upload",
+              "relationTo": "media",
+              "filterOptions": {
+                "mimeType": {
+                  "contains": "image/"
+                }
+              }
             }
           ]
         },

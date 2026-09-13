@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+import { mediaImageSource } from '@/lib/media-delivery'
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -9,26 +11,15 @@ import { HeroProcessFlow } from './HeroProcessFlow'
 import { localizedHref } from '@/lib/i18n'
 import { homeText } from '@/lib/home-copy'
 import type { HomeCmsData } from '@/lib/homepage-types'
-import { mediaURL, projectTitle, storyData } from '@/lib/homepage-types'
+import { mediaURL, selectedSolutions, homepageImage } from '@/lib/homepage-types'
 import { publicSolutionGroupForHomepageCategory, type PublicSolutionGroup } from '@/lib/public-solution-groups'
 
-const baseWork = [
-  { title: 'Smart Retail', kind: 'retail', label: 'DIGITAL MEETS PHYSICAL', text: 'Exploring the space between a digital interface and a physical retail experience.' },
-  { title: 'Interactive Systems', kind: 'interactive', label: 'TECHNOLOGY YOU CAN TOUCH', text: 'Interfaces, electronics and enclosures considered together as one complete system.' },
-  { title: 'Brand Experiences', kind: 'brand', label: 'IDEAS WITH A PHYSICAL PRESENCE', text: 'A space for expressive installations and memorable physical interactions.' },
-  { title: 'Kids Play', kind: 'play', label: 'AN ORIGINAL DEV STUDIO PRODUCT', text: 'Our own product, Kids Play. Product photography and the full story will be added in the content phase.' },
-]
 const baseSteps = [
   ['Concept', 'Find the right problem. Shape the idea. Define what the product needs to become.'],
   ['Design & Engineering', 'Turn intent into form, materials, mechanics and a plan that can be built.'],
   ['Hardware + Software', 'Make the physical and digital work together, from electronics to the interface.'],
   ['Production', 'Bring the design off the screen and into the workshop. Manufacture, assemble and refine.'],
   ['Installation', 'Bring every part together in its real environment, with support beyond delivery.'],
-]
-const baseStories = [
-  ['Behind the Build', 'The thinking behind the making.', 'machine'],
-  ['Technology', 'Where hardware meets software.', 'interactive'],
-  ['Studio Notes', 'Ideas are only the beginning.', 'brand'],
 ]
 const solutionGroupLinks = [
   ['digital-retail', 'Retail Technology & Digital Systems'],
@@ -58,19 +49,10 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
   const [panel, setPanel] = useState({ title: '', text: '', kind: '' })
   const locale = cms.locale
   const t = (text: string) => homeText(locale, text)
-  const work = baseWork.map(item => ({ ...item, title: t(item.title), label: t(item.label), text: t(item.text) }))
   const steps = baseSteps.map(step => step.map(t))
-  const stories = baseStories.map(([type, title, kind]) => [t(type), t(title), kind])
   const home = cms.homepage
   const settings = cms?.settings
-  const workItems = home?.selectedWork?.projects?.length
-    ? home.selectedWork.projects.slice(0, 4).map((project, index) => ({
-      title: projectTitle(project) || work[index].title,
-      kind: work[index].kind,
-      label: work[index].label,
-      text: (typeof project === 'object' && project?.shortDescription) || work[index].text,
-    }))
-    : work
+  const workItems = selectedSolutions(home?.selectedWork?.solutions)
   const processItems = home?.process?.steps?.length
     ? home.process.steps.map((step, index) => [step.title || steps[index]?.[0] || '', step.description || steps[index]?.[1] || ''] as [string, string])
     : steps
@@ -80,14 +62,8 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
     .filter((item): item is { name: string; group: PublicSolutionGroup } => Boolean(item.name && item.group))
     .filter((item, index, items) => items.findIndex(candidate => candidate.group === item.group) === index)
   const madeMedia = mediaURL(home?.madeHere?.media)
-  const ownProductsMedia = mediaURL(home?.ownProducts?.media)
+  const referencesMedia = homepageImage(home?.references?.media)
   const finalCtaMedia = mediaURL(home?.finalCta?.media)
-  const storyItems = home?.latestFromTheStudio?.stories?.length
-    ? home.latestFromTheStudio.stories.slice(0, 3).map((story, index) => {
-      const resolved = storyData(story)
-      return [resolved?.type || stories[index][0], resolved?.title || stories[index][1], stories[index][2]] as [string, string, string]
-    })
-    : stories
 
   function openPanel(title: string, text: string, kind = '') {
     setPanel({ title, text, kind })
@@ -135,7 +111,13 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
       <section className="work-section section-dark section-pad" id="projects">
         <div className="section-label"><span>{t("02 / SELECTED DIRECTIONS")}</span><span>{t("PHYSICAL. DIGITAL. EVERYTHING BETWEEN.")}</span></div>
         <div className="section-heading"><h2>{home?.selectedWork?.headline || <>{t("IDEAS.")}<br /><span className="muted">{t("MADE TANGIBLE.")}</span></>}</h2><p>{home?.selectedWork?.intro || <>{t("A first look at the worlds we build in.")}<br />{t("Visual studies for the projects to come.")}</>}</p></div>
-        <div className="work-grid">{workItems.map((project, i) => <button className={`work-item work-item-${i}`} key={project.title} onClick={() => openPanel(project.title, `${project.text} ${locale === 'bhs' ? 'Ovaj apstraktni prikaz je privremeni dizajnerski prikaz, a ne fotografija završenog projekta.' : 'This abstract visual is a design placeholder, not a photograph of a completed project.'}`, project.kind)}><div className="work-image"><Visual kind={project.kind} /><span className="round-arrow"><Arrow /></span></div><div className="work-caption"><div><span className="meta">0{i + 1} / {project.label}</span><h3>{project.title}</h3></div><span className="meta">{t("VIEW STUDY ↗")}</span></div></button>)}</div>
+        <div className="work-grid">{workItems.map((solution, i) => {
+          const media = homepageImage(solution.heroMedia)
+          return <a className={`work-item work-item-${i}`} key={solution.id} href={localizedHref(`/solutions/${solution.slug}`, locale)}>
+            <div className="work-image">{media ? <Image className="work-solution-image" {...mediaImageSource(media)} alt={media.alt || solution.title} fill sizes="(max-width: 700px) 100vw, 50vw" /> : <Visual kind="machine" />}<span className="round-arrow"><Arrow /></span></div>
+            <div className="work-caption"><div><span className="meta">0{i + 1}</span><h3>{solution.title}</h3>{solution.shortDescription && <p className="work-description">{solution.shortDescription}</p>}</div><span className="meta">{t("VIEW SOLUTION ↗")}</span></div>
+          </a>
+        })}</div>
       </section>
       <section className="build-section section-light section-pad" id="solutions">
         <div className="section-label"><span>{t("03 / WHAT WE BUILD")}</span><span>{t("NO SINGLE DISCIPLINE. NO SINGLE BOX.")}</span></div>
@@ -149,8 +131,14 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
       </section>
       <section className="advantage section-yellow section-pad" id="advantage"><div className="section-label"><span>{t("05 / THE ONE-TEAM ADVANTAGE")}</span><span>{t("LESS DISTANCE BETWEEN IDEA AND REALITY.")}</span></div><h2>{home?.whyDevStudio?.headline || <>{t("NO HANDOFF")}<br />{t("BETWEEN FIVE")}<br />{t("COMPANIES.")}</>}</h2><div className="advantage-bottom"><span className="connection-mark" aria-hidden="true">↔</span><p>{home?.whyDevStudio?.body || t("One conversation that continues from concept to installation. Designers talk to engineers. Software meets hardware. Production informs the design. The knowledge stays with the team, and the team stays with the product.")}</p><a className="text-link" href={localizedHref('/#made-here', locale)}>{t("See where it comes together")} <Arrow /></a></div></section>
       <section className="made-section section-dark" id="made-here"><div className="made-visual"><Visual kind="machine" media={madeMedia} /><span className="vertical-label meta">{t("MATERIAL / MECHANICS / MAKING")}</span></div><div className="made-copy"><p className="eyebrow">{t("06 / MADE HERE")}</p><h2>{home?.madeHere?.headline || <>{t("DESIGNED HERE.")}<br />{t("ENGINEERED HERE.")}<br /><em>{t("BUILT HERE.")}</em></>}</h2><p>{home?.madeHere?.body || t("Close to the materials. Close to the machines. Close to every decision that makes the final product better.")}</p><div className="location"><span className="status-dot" /><span>{home?.madeHere?.location || settings?.location || t("Banja Luka, Bosnia & Herzegovina")}</span></div><span className="meta muted">{t("INDUSTRIAL FORM STUDY / WORKSHOP MEDIA TO FOLLOW")}</span></div></section>
-      <section className="own-section section-light section-pad" id="own-products"><div className="section-label"><span>{t("07 / OUR OWN IDEAS, OUT IN THE WORLD")}</span><span>{t("DEV STUDIO ORIGINALS")}</span></div><h2>{home?.ownProducts?.headline || <>{t("WE DON’T ONLY BUILD FOR CLIENTS.")}<br /><span className="muted">{t("WE BUILD OUR OWN PRODUCTS.")}</span></>}</h2><div className="own-layout"><div className="own-visual"><Visual kind="play" media={ownProductsMedia} /><span className="kids-wordmark">kids<span>play</span></span></div><div className="own-copy"><p className="eyebrow">{t("IMAGINED AND DEVELOPED BY DEV STUDIO")}</p><h3>{t("A little more")}<br />{t("room for")} <em>{t("play.")}</em></h3><p>{home?.ownProducts?.body || t("Kids Play is an original Dev Studio product. The same integrated thinking, applied to an idea of our own.")}</p><button className="button button-dark" onClick={() => openPanel('Kids Play', t("An original Dev Studio product. This visual explores a playful design direction; product details and real photography will follow."), 'play')}>{t("Discover Kids Play")} <Arrow /></button></div></div></section>
-      <section className="stories-section section-light section-pad" id="stories"><div className="section-label"><span>{t("08 / LATEST FROM THE STUDIO")}</span><span>{t("WORK IN PROGRESS. THINKING IN MOTION.")}</span></div><div className="section-heading"><h2>{home?.latestFromTheStudio?.headline || <>{t("INSIDE")}<br />{t("THE MAKING.")}</>}</h2><span className="meta muted">{home?.latestFromTheStudio?.intro || t("EDITORIAL PREVIEWS / STORIES COMING SOON")}</span></div><div className="stories-grid">{storyItems.map(([type, title, kind]) => <button className="story" key={title} onClick={() => openPanel(title, (locale === 'bhs' ? `Najava buduće priče iz kategorije ${type.toLowerCase()}. Urednički sadržaj biće dodan kroz CMS.` : `A placeholder for a future ${type.toLowerCase()} story. Editorial content will be added when the homepage is connected to the CMS.`), kind)}><div className="story-image"><Visual kind={kind} /></div><p className="meta">{type.toUpperCase()} <span>{t("PREVIEW")}</span></p><h3>{title}<Arrow /></h3></button>)}</div></section>
+      <section className="references-section section-light section-pad" id="references">
+        <div className="section-label"><span>{t("07 / REFERENCES")}</span><span>+</span></div>
+        <div className="section-heading"><h2>{home?.references?.headline || t("REFERENCES")}</h2>{home?.references?.intro && <p>{home.references.intro}</p>}</div>
+        {referencesMedia ? <Image className="references-image" {...mediaImageSource(referencesMedia)} alt={referencesMedia.alt || t("REFERENCES")} width={referencesMedia.width || 1600} height={referencesMedia.height || 1000} sizes="100vw" /> : <>
+          <p className="references-placeholder-note">{t("Temporary reference placeholders")}</p>
+          <div className="references-grid" aria-label={t("Temporary reference placeholders")}>{Array.from({ length: 20 }, (_, i) => <span className={`reference-mark reference-mark-${i % 4}`} key={i}>REF {String(i + 1).padStart(2, '0')}</span>)}</div>
+        </>}
+      </section>
       <section className="final-cta section-dark section-pad" id="contact"><div className="section-label"><span>{t("THE NEXT THING WE BUILD COULD BE YOURS.")}</span><span>{t("LET’S TALK.")}</span></div><h2>{home?.finalCta?.headline || <>{t("GOT AN IDEA?")}<br /><em>{t("LET’S BUILD IT.")}</em></>}</h2><button className="button button-yellow" onClick={contact}>{home?.finalCta?.buttonLabel || t("START A PROJECT")} <Arrow /></button>{finalCtaMedia && <img className="cta-media" src={finalCtaMedia} alt="" />}<div className="cta-rule" /></section>
     </main>
     <SiteFooter locale={locale} settings={settings} />

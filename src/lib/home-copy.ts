@@ -2,6 +2,10 @@ import type { Locale } from './i18n'
 
 // Localized versions of the existing prototype copy, used only when CMS content is missing.
 const bhs: Record<string, string> = {
+  'VIEW SOLUTION ↗': 'POGLEDAJTE RJEŠENJE ↗',
+  '07 / REFERENCES': '07 / REFERENCE',
+  'REFERENCES': 'REFERENCE',
+  'Temporary reference placeholders': 'Privremene oznake za reference',
   'Idea': 'Ideja',
   'Design': 'Dizajn',
   'Mechanics': 'Mehanika',

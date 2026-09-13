@@ -777,6 +777,7 @@ export interface Homepage {
   selectedWork?: {
     headline?: string | null;
     intro?: string | null;
+    solutions?: (number | Solution)[] | null;
     projects?: (number | Project)[] | null;
   };
   whatWeBuild?: {
@@ -821,6 +822,11 @@ export interface Homepage {
     headline?: string | null;
     intro?: string | null;
     stories?: (number | Story)[] | null;
+  };
+  references?: {
+    headline?: string | null;
+    intro?: string | null;
+    media?: (number | null) | Media;
   };
   finalCta?: {
     headline?: string | null;
@@ -905,6 +911,7 @@ export interface HomepageSelect<T extends boolean = true> {
     | {
         headline?: T;
         intro?: T;
+        solutions?: T;
         projects?: T;
       };
   whatWeBuild?:
@@ -961,6 +968,13 @@ export interface HomepageSelect<T extends boolean = true> {
         headline?: T;
         intro?: T;
         stories?: T;
+      };
+  references?:
+    | T
+    | {
+        headline?: T;
+        intro?: T;
+        media?: T;
       };
   finalCta?:
     | T
