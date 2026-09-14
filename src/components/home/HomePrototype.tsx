@@ -97,7 +97,7 @@ export function HomePrototype({ cms }: { cms: HomeCmsData }) {
           <div className="hero-copy"><p className="eyebrow">{home?.hero?.eyebrow || t("FROM IDEA TO REALITY.")}</p><h1 id="hero-title">{home?.hero?.headline ? home.hero.headline.split('\n').map((line, index) => <span key={line}>{index > 0 && <br />}{line}</span>) : <>{t("WE BUILD")}<br />{t("WHAT OTHERS")}<br /><em>{t("ONLY IMAGINE.")}</em></>}</h1>
             <p className="hero-disciplines">{home?.hero?.supportingLine || t("Design. Electronics. Software. Manufacturing.")}</p>
             <p className="hero-description">{home?.hero?.subtext || t("From the first idea to a finished product — engineered, built and delivered by one team.")}</p>
-            <div className="hero-actions"><button className="button button-yellow" onClick={contact}>{home?.hero?.primaryCtaLabel || t("Start a Project")} <Arrow /></button><a className="text-link" href={localizedHref('/#projects', locale)}>{home?.hero?.secondaryCtaLabel || t("Explore our work")} <span aria-hidden="true">↓</span></a></div>
+            <div className="hero-actions"><button className="button button-yellow" onClick={contact}>{home?.hero?.primaryCtaLabel || t("Start a Project")} <Arrow /></button><a className="text-link" href={localizedHref('/#solutions', locale)}>{home?.hero?.secondaryCtaLabel || t("Explore our work")} <span aria-hidden="true">↓</span></a></div>
           </div>
           <HeroProcessFlow locale={locale} />
         </div>
