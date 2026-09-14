@@ -44,7 +44,8 @@
 .story-group .editorial-list--stories .editorial-entry:first-child { border-top: 0; }
 .story-group .editorial-list--stories .editorial-entry > a { display: grid; grid-template-columns: 1fr 2fr; gap: 7%; border: 0; padding: 0; }
 .story-group .editorial-list--stories .entry-copy h2 { font-size: clamp(34px, 4vw, 65px); }
-.story-group .editorial-list--stories .entry-image .content-image { aspect-ratio: 4 / 3; }
+.story-group .editorial-list--stories .entry-image { align-self: start; width: 100%; aspect-ratio: 4 / 3; }
+.story-group .editorial-list--stories .entry-image .content-image { width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; }
 .story-group .editorial-list--stories .editorial-entry--text .entry-image { display: grid; place-items: center; aspect-ratio: 4 / 3; }
 .editorial-list--stories .editorial-entry:not(:first-child) > a { display: grid; grid-template-columns: 1fr 1.1fr; gap: 6%; padding-top: 35px; border-top: 1px solid #b7baaa; }
 .editorial-list--stories .editorial-entry:not(:first-child) h2 { font-size: clamp(30px, 3.4vw, 52px); }
