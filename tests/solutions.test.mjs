@@ -48,7 +48,7 @@ const hooks = registerHooks({
     return source === undefined ? next(url, context) : { format: 'module', source, shortCircuit: true }
   },
 })
-const { findAllSolutions, findEditorial } = await import('../src/lib/content-data.ts')
+const { findAllSolutions, findAllStories, findEditorial } = await import('../src/lib/content-data.ts')
 const { IndexPage, indexMetadata } = await import('../src/components/content/SectionPages.tsx')
 const { localizedHref } = await import('../src/lib/i18n.ts')
 const { publicSolutionGroups, publicSolutionGroupForHomepageCategory } = await import('../src/lib/public-solution-groups.ts')
@@ -131,14 +131,42 @@ test('Solutions index renders the four finalized public groups in both locales',
   }
 })
 
-test('Solutions stay complete as CMS grows; other editorial queries remain paginated', async () => {
+test('Stories index renders published stories in the fixed six-type order without pagination', async () => {
+  const storyTypes = ['project-story', 'video', 'news', 'technology', 'behind-the-build', 'case-study']
+  const labels = {
+    en: ['Project Story', 'Video', 'News', 'Technology', 'Behind the Build', 'Case Study'],
+    bhs: ['Priča o projektu', 'Video', 'Novosti', 'Tehnologija', 'Iza izrade', 'Studija slučaja'],
+  }
+  for (const locale of ['bhs', 'en']) {
+    records = ['technology', 'project-story', 'case-study', 'video', 'behind-the-build', 'news', 'project-story'].map((type, index) => ({
+      id: index + 1, title: `Story ${locale} ${index + 1}`, slug: `story-${locale}-${index + 1}`, type, _status: 'published',
+    }))
+    queries = []
+    const html = renderToStaticMarkup(await IndexPage({ collection: 'stories', locale, searchParams: Promise.resolve({ page: '99' }) }))
+    assert.equal((await findAllStories(locale)).docs.length, 7)
+    assert.equal(queries[0].pagination, false)
+    assert.doesNotMatch(html, /content-pagination/)
+    const positions = storyTypes.map(type => html.indexOf(`id="${type}"`))
+    assert.ok(positions.every(position => position >= 0))
+    assert.ok(positions.every((position, index) => index === 0 || position > positions[index - 1]))
+    for (const [index, type] of storyTypes.entries()) {
+      const section = html.match(new RegExp(`<section class="story-group" id="${type}"[^>]*>([\\s\\S]*?)</section>`))?.[1]
+      assert.ok(section, type)
+      assert.match(section, new RegExp(`<h2[^>]*>${labels[locale][index]}</h2>`))
+      assert.equal((section.match(/<article /g) || []).length, records.filter(doc => doc.type === type).length)
+    }
+    const metadata = await indexMetadata('stories', locale, Promise.resolve({ page: '99' }))
+    assert.equal(metadata.alternates.canonical, localizedHref('/stories', locale))
+  }
+})
+
+test('Solutions and Stories stay complete as CMS grows; projects remain paginated', async () => {
   records = Array.from({ length: 125 }, (_, id) => ({ id, title: `Solution ${id}`, slug: `solution-${id}`, solutionGroup: [...publicSolutionGroups, 'production'][id % 5], _status: 'published' }))
   assert.equal((await findAllSolutions('bhs')).docs.length, 125)
-  for (const collection of ['projects', 'stories', 'solutions']) {
-    assert.equal((await findEditorial(collection, 'en', 2)).docs.length, 8)
-    assert.equal(queries.at(-1).pagination, true)
-    assert.equal(queries.at(-1).page, 2)
-  }
+  assert.equal((await findAllStories('en')).docs.length, 125)
+  assert.equal((await findEditorial('projects', 'en', 2)).docs.length, 8)
+  assert.equal(queries.at(-1).pagination, true)
+  assert.equal(queries.at(-1).page, 2)
   records.push({ id: 126, _status: 'draft' })
   assert.equal((await findAllSolutions('en')).docs.length, 125)
 })
@@ -163,8 +191,10 @@ test('Homepage categories use explicit finalized BHS and EN mappings', () => {
 test('empty and unavailable CMS remain supported', async () => {
   records = []
   assert.deepEqual((await findAllSolutions('bhs')).docs, [])
+  assert.deepEqual((await findAllStories('bhs')).docs, [])
   unavailable = true
   assert.equal((await findAllSolutions('en')).unavailable, true)
+  assert.equal((await findAllStories('en')).unavailable, true)
   unavailable = false
   fail = true
   assert.equal((await findAllSolutions('bhs')).unavailable, true)

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import type { Download, Project, Solution, Story } from '@/payload-types'
 import { coverMedia, description, pageNumber, populated, type EditorialCollection, type SearchParams, type Section } from '@/lib/content'
-import { findAllSolutions, findDownloads, findEditorial, getDetail, getRelated } from '@/lib/content-data'
+import { findAllSolutions, findAllStories, findDownloads, findEditorial, getDetail, getRelated } from '@/lib/content-data'
 import { languageAlternates, localizedHref, type Locale } from '@/lib/i18n'
 import { publicSolutionGroups } from '@/lib/public-solution-groups'
 import { sectionCopy, ui } from '@/lib/section-copy'
@@ -15,7 +15,7 @@ import { ContentGallery } from './ContentGallery'
 export async function indexMetadata(section: Section, locale: Locale, searchParams?: Promise<SearchParams>): Promise<Metadata> {
   const copy = sectionCopy(locale, section)
   const page = pageNumber((await searchParams)?.page)
-  const path = `/${section}${page > 1 && section !== 'resources' && section !== 'solutions' ? `?page=${page}` : ''}`
+  const path = `/${section}${page > 1 && section !== 'resources' && section !== 'solutions' && section !== 'stories' ? `?page=${page}` : ''}`
   return { title: `${copy.label} — Dev Studio`, description: copy.intro,
     alternates: { canonical: localizedHref(path, locale), languages: languageAlternates(path) }, robots: { index: false, follow: false } }
 }
@@ -53,15 +53,31 @@ function GroupedSolutions({ docs, locale }: { docs: Solution[]; locale: Locale }
   </div>
 }
 
+const storyTypes: Story['type'][] = ['project-story', 'video', 'news', 'technology', 'behind-the-build', 'case-study']
+
+function GroupedStories({ docs, locale }: { docs: Story[]; locale: Locale }) {
+  const labels = ui(locale)
+  return <div className="story-groups">
+    {storyTypes.map(type => {
+      const groupDocs = docs.filter(doc => doc.type === type)
+      if (!groupDocs.length) return null
+      return <section className="story-group" id={type} aria-labelledby={`${type}-heading`} key={type}>
+        <h2 className="story-group-heading" id={`${type}-heading`}>{labels[type]}</h2>
+        <EditorialList collection="stories" docs={groupDocs} locale={locale} />
+      </section>
+    })}
+  </div>
+}
+
 export async function IndexPage({ collection, locale, searchParams }: { collection: EditorialCollection; locale: Locale; searchParams: Promise<SearchParams> }) {
-  const page = collection === 'solutions' ? 1 : pageNumber((await searchParams).page)
-  const result = collection === 'solutions' ? await findAllSolutions(locale) : await findEditorial(collection, locale, page)
+  const page = collection === 'solutions' || collection === 'stories' ? 1 : pageNumber((await searchParams).page)
+  const result = collection === 'solutions' ? await findAllSolutions(locale) : collection === 'stories' ? await findAllStories(locale) : await findEditorial(collection, locale, page)
   if (!result.unavailable && page > 1 && page > result.totalPages) notFound()
   return <ContentShell locale={locale}>
     <SectionIntro section={collection} locale={locale} />
     <section className={`content-index content-index--${collection} content-pad`} aria-label={sectionCopy(locale, collection).label}>
-      {result.docs.length ? collection === 'solutions' ? <GroupedSolutions docs={result.docs as Solution[]} locale={locale} /> : <EditorialList collection={collection} docs={result.docs} locale={locale} /> : <EmptyState locale={locale} unavailable={result.unavailable} />}
-      {collection !== 'solutions' && <Pagination path={`/${collection}`} page={page} totalPages={result.totalPages} locale={locale} />}
+      {result.docs.length ? collection === 'solutions' ? <GroupedSolutions docs={result.docs as Solution[]} locale={locale} /> : collection === 'stories' ? <GroupedStories docs={result.docs as Story[]} locale={locale} /> : <EditorialList collection={collection} docs={result.docs} locale={locale} /> : <EmptyState locale={locale} unavailable={result.unavailable} />}
+      {collection !== 'solutions' && collection !== 'stories' && <Pagination path={`/${collection}`} page={page} totalPages={result.totalPages} locale={locale} />}
     </section>
   </ContentShell>
 }

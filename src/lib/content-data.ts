@@ -32,6 +32,10 @@ export function findAllSolutions(locale: Locale) {
   return findEditorial('solutions', locale, 1, undefined, 0)
 }
 
+export function findAllStories(locale: Locale) {
+  return findEditorial('stories', locale, 1, undefined, 0)
+}
+
 export const getDetail = cache(async (collection: EditorialCollection, slug: string, locale: Locale) => {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return { doc: null, unavailable: false, translatedPaths: {}, languages: {} }
   const result = await findEditorial(collection, locale, 1, { slug: { equals: slug } }, 1)
