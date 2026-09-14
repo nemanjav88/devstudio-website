@@ -213,9 +213,11 @@
 .contact-aside h2 { font-size: clamp(42px, 5.6vw, 84px); margin: 25px 0 30px!important; }
 .contact-aside h2 em { color: #69704f; font-style: normal; }
 .contact-aside > p:not(.eyebrow) { max-width: 360px; font-size: 16px; line-height: 1.75; color: #5d6355; }
-.contact-details { display: flex; flex-direction: column; gap: 12px; margin-top: 45px; font: 12px "Courier New", monospace; }
-.contact-details a { width: fit-content; border-bottom: 1px solid #a5aa96; padding-bottom: 5px; }
-.contact-details span { color: #6d7265; }
+.contact-details { display: flex; flex-direction: column; gap: 22px; margin-top: 45px; font: 12px "Courier New", monospace; }
+.contact-detail { display: flex; flex-direction: column; gap: 7px; }
+.contact-detail > .meta { color: #6d7265; }
+.contact-detail a { width: fit-content; border-bottom: 1px solid #a5aa96; padding-bottom: 5px; }
+.contact-detail > span:last-child { color: #6d7265; }
 .project-form { border-top: 1px solid #aab09c; padding-top: 8px; }
 .project-form label,.project-form fieldset { display: flex; flex-direction: column; gap: 10px; border: 0; padding: 0; margin: 0 0 31px; }
 .project-form label > span,.project-form legend { font: 10px "Courier New", monospace; text-transform: uppercase; letter-spacing: .08em; color: #5f6657; }
