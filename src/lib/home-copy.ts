@@ -116,7 +116,7 @@ const bhs: Record<string, string> = {
   'COMPANIES.': 'KOMPANIJA.',
   'One conversation that continues from concept to installation. Designers talk to engineers. Software meets hardware. Production informs the design. The knowledge stays with the team, and the team stays with the product.': 'Jedan razgovor koji traje od koncepta do instalacije. Dizajneri razgovaraju sa inženjerima. Softver susreće hardver. Proizvodnja usmjerava dizajn. Znanje ostaje u timu, a tim ostaje uz proizvod.',
   'See where it comes together': 'Pogledajte gdje sve nastaje',
-  'MATERIAL / MECHANICS / MAKING': 'MI U DEV STUDIJU POMJERAMO GRANICE',
+  'AT DEV STUDIO, WE PUSH BOUNDARIES': 'MI U DEV STUDIJU POMJERAMO GRANICE',
   '06 / MADE HERE': '06 / PROIZVEDENO OVDJE',
   'DESIGNED HERE.': 'OSMIŠLJENO OVDJE.',
   'ENGINEERED HERE.': 'RAZVIJENO OVDJE.',
