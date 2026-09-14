@@ -120,8 +120,8 @@ export async function DetailPage({ collection, locale, slug }: { collection: Edi
         <span className="eyebrow">{labels.overview}</span>
         <div><EditorialText content={doc.content} locale={locale} />{'video' in doc && <ContentVideo video={doc.video} locale={locale} />}</div>
       </section> : null}
-      {collection === 'solutions'
-        ? <ContentGallery gallery={doc.gallery} locale={locale} />
+      {collection === 'solutions' || collection === 'stories'
+        ? <ContentGallery gallery={collection === 'stories' ? doc.gallery?.filter(item => populated(item.image)?.id !== media?.id) : doc.gallery} locale={locale} />
         : <Gallery gallery={doc.gallery?.filter(item => populated(item.image)?.id !== media?.id)} locale={locale} />}
       {(related.projects.length > 0 || related.stories.length > 0 || related.solutions.length > 0) && <section className="related-content content-pad" aria-label={labels.related}>
         <div className="section-label"><span>{labels.related}</span><span>+</span></div>

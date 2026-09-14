@@ -7,7 +7,7 @@ import type { Locale } from '@/lib/i18n'
 import { ui } from '@/lib/section-copy'
 import { ContentMedia } from './ContentMedia'
 
-/** Uses the shared Payload gallery shape; enabled for Solutions in phase one. */
+/** Uses the shared Payload gallery shape for Solutions and Stories. */
 export function ContentGallery({ gallery, locale }: { gallery: Project['gallery']; locale: Locale }) {
   const items = (gallery || []).flatMap((entry, index) => {
     const media = populated(entry.image)
