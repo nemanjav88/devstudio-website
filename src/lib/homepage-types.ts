@@ -10,6 +10,7 @@ export type HomeCmsData = {
     contactEmail?: string
     phone?: string | null
     location?: string | null
+    socialLinks?: SiteSetting['socialLinks']
     navigation?: Partial<SiteSetting['navigation']>
     seo?: Partial<SiteSetting['seo']>
   }

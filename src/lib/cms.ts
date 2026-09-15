@@ -24,7 +24,7 @@ export const getSiteSettings = cache(async (locale: Locale): Promise<HomeCmsData
     const settings = await payload.findGlobal({ slug: 'site-settings', locale, fallbackLocale: false, overrideAccess: false, depth: 1 })
     return {
       companyName: settings.companyName, contactEmail: settings.contactEmail, phone: settings.phone,
-      location: settings.location, navigation: settings.navigation, seo: settings.seo,
+      location: settings.location, socialLinks: settings.socialLinks, navigation: settings.navigation, seo: settings.seo,
     }
   } catch {
     console.warn('[frontend] Site Settings unavailable; using local labels.')
