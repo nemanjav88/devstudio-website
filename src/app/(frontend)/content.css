@@ -237,6 +237,13 @@
 .form-submit { display: flex; gap: 25px; align-items: center; flex-wrap: wrap; }
 .form-submit .button { border: 0; }
 .form-status { flex: 1; min-width: 220px; color: #596052; font-size: 13px; line-height: 1.5; }
+.contact-success-splash { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; padding: clamp(32px, 6vw, 96px); background: #111210; color: #f3f0e6; }
+.contact-success-splash::before { content: ''; width: 100%; border-top: 1px solid #d7ad00; }
+.contact-success-splash__content { max-width: 800px; margin: auto 0; }
+.contact-success-splash__eyebrow { margin: 0 0 28px; color: #d7ad00; font: 11px "Courier New", monospace; letter-spacing: .1em; }
+.contact-success-splash h2 { max-width: 740px; margin: 0!important; font-size: clamp(54px, 8vw, 128px); line-height: .94; letter-spacing: -.06em; }
+.contact-success-splash__content > p:last-child { max-width: 470px; margin: 28px 0 0; color: #c6c5ba; font-size: clamp(16px, 1.5vw, 20px); line-height: 1.55; }
+.contact-success-splash .button { align-self: flex-end; }
 @media(max-width:850px) {
   .core-hero { padding-top: 45px; padding-bottom: 70px; }
   .core-hero h1 { font-size: 11vw; }
@@ -255,6 +262,8 @@
   .principle-grid { grid-template-columns: 1fr; gap: 35px; }
   .principle-grid h3 { margin-top: 28px!important; }
   .contact-aside { position: static; }
+  .contact-success-splash { padding: 28px 6%; }
+  .contact-success-splash .button { align-self: flex-start; }
 }
 @media(max-width:580px) {
   .core-hero h1 { font-size: 13vw; }
