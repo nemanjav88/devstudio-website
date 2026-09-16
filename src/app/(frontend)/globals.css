@@ -131,7 +131,10 @@ body { margin: 0; background: var(--ink); }
 .made-copy { padding: 100px 8% 75px; display: flex; flex-direction: column; align-items: start; justify-content: center; }
 .made-copy h2 { font-size: clamp(34px,3.6vw,62px); margin: 35px 0; }
 .made-copy > p:not(.eyebrow) { max-width: 320px; color: #a9aca1; font-size: 14px; line-height: 1.8; }
-.location { display: flex; align-items: center; font-size: 12px; margin: 35px 0; }
+.location { display: flex; align-items: center; font-size: 12px; margin: 35px 0 12px; }
+.location-pin { width: 15px; height: 15px; margin-right: 7px; flex: 0 0 auto; }
+.made-solutions-link { display: inline-flex; align-items: center; gap: 7px; color: #f3f0e6; border-bottom: 1px solid #ffffff55; padding-bottom: 4px; font: 12px "Courier New", monospace; }
+.made-solutions-link span { color: #FFCC00; }
 .made-copy > .meta { font-size: 8px; }
 .own-section h2 { font-size: clamp(32px,4.2vw,68px); margin: 30px 0 60px; }
 .own-layout { display: grid; grid-template-columns: 1.15fr 1fr; gap: 9%; align-items: center; }
