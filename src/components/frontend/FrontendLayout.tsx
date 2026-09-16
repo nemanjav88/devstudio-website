@@ -5,10 +5,9 @@ import '@/app/(frontend)/globals.css'
 import '@/app/(frontend)/content.css'
 
 export const frontendMetadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://new.devstudio.biz'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://devstudio.biz'),
   title: 'Dev Studio — From Idea to Reality',
   description: 'An integrated product development and technology studio in Banja Luka. Design, electronics, software and manufacturing. From idea to reality.',
-  robots: { index: false, follow: false },
 }
 
 export function FrontendLayout({ children, locale }: { children: ReactNode; locale: Locale }) {

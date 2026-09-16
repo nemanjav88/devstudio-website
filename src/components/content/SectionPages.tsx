@@ -17,17 +17,17 @@ export async function indexMetadata(section: Section, locale: Locale, searchPara
   const page = pageNumber((await searchParams)?.page)
   const path = `/${section}${page > 1 && section !== 'resources' && section !== 'solutions' && section !== 'stories' ? `?page=${page}` : ''}`
   return { title: `${copy.label} — Dev Studio`, description: copy.intro,
-    alternates: { canonical: localizedHref(path, locale), languages: languageAlternates(path) }, robots: { index: false, follow: false } }
+    alternates: { canonical: localizedHref(path, locale), languages: languageAlternates(path) } }
 }
 
 export async function detailMetadata(collection: EditorialCollection, locale: Locale, slug: string): Promise<Metadata> {
   const result = await getDetail(collection, slug, locale)
   if (!result.doc) {
     if (!result.unavailable) notFound()
-    return { title: `${ui(locale).unavailable} — Dev Studio`, robots: { index: false, follow: false } }
+    return { title: `${ui(locale).unavailable} — Dev Studio` }
   }
   return { title: `${result.doc.title} — Dev Studio`, description: description(result.doc),
-    alternates: { canonical: result.translatedPaths[locale], languages: result.languages }, robots: { index: false, follow: false } }
+    alternates: { canonical: result.translatedPaths[locale], languages: result.languages } }
 }
 
 function SectionIntro({ section, locale }: { section: Section; locale: Locale }) {

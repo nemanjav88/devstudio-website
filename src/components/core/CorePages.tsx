@@ -20,7 +20,7 @@ export function coreMetadata(page: CorePage, locale: Locale): Metadata {
     contact: locale === 'bhs' ? 'Pokrenite razgovor o proizvodu, iskustvu ili sistemu koji želite izgraditi.' : 'Start a conversation about the product, experience or system you want to build.',
   }
   const path = `/${page}`
-  return { title: `${labels[page]} — Dev Studio`, description: descriptions[page], robots: { index: false, follow: false }, alternates: { canonical: localizedHref(path, locale), languages: languageAlternates(path) } }
+  return { title: `${labels[page]} — Dev Studio`, description: descriptions[page], alternates: { canonical: localizedHref(path, locale), languages: languageAlternates(path) } }
 }
 
 const capabilities = [
