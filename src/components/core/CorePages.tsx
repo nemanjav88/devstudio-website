@@ -4,23 +4,38 @@ import { ContentShell } from '@/components/content/ContentShell'
 import { localizedHref, languageAlternates, type Locale } from '@/lib/i18n'
 import { homeText } from '@/lib/home-copy'
 import { getSiteSettings } from '@/lib/cms'
+import { metadataImage, socialMetadata } from '@/lib/seo'
 import { ProjectInquiryForm } from './ProjectInquiryForm'
 
 export type CorePage = 'capabilities' | 'about' | 'contact'
 
-export function coreMetadata(page: CorePage, locale: Locale): Metadata {
-  const labels = {
-    capabilities: locale === 'bhs' ? 'Mogućnosti i proizvodnja' : 'Capabilities & production',
-    about: locale === 'bhs' ? 'O Dev Studiju' : 'About Dev Studio',
-    contact: locale === 'bhs' ? 'Pokrenimo projekat' : 'Start a Project',
+export async function coreMetadata(page: CorePage, locale: Locale): Promise<Metadata> {
+  const titles: Record<CorePage, string> = locale === 'bhs' ? {
+    capabilities: 'Razvoj proizvoda i proizvodnja | Dev Studio',
+    about: 'O Dev Studiju | Razvoj proizvoda i tehnologije',
+    contact: 'Pokrenimo projekat | Dev Studio',
+  } : {
+    capabilities: 'Product Development & Manufacturing | Dev Studio',
+    about: 'About Dev Studio | Product & Technology Studio',
+    contact: 'Start a Project | Dev Studio',
   }
-  const descriptions = {
-    capabilities: locale === 'bhs' ? 'Jedan tim za razvoj proizvoda, dizajn, elektroniku, softver, proizvodnju i instalaciju.' : 'One team for product development, design, electronics, software, manufacturing and installation.',
-    about: locale === 'bhs' ? 'Dev Studio dizajnira, razvija, izrađuje i postavlja cjelovite proizvode i tehnološka iskustva iz Banje Luke.' : 'Dev Studio designs, engineers, builds and deploys complete products and technology experiences from Banja Luka.',
-    contact: locale === 'bhs' ? 'Pokrenite razgovor o proizvodu, iskustvu ili sistemu koji želite izgraditi.' : 'Start a conversation about the product, experience or system you want to build.',
+  const descriptions: Record<CorePage, string> = locale === 'bhs' ? {
+    capabilities: 'Dizajn, mehanika, elektronika, softver, prototipiranje i proizvodnja u jednom timu — od prve ideje do instalacije i podrške.',
+    about: 'Dev Studio je integrisani studio iz Banje Luke koji povezuje dizajn, inženjering, elektroniku, softver i proizvodnju u razvoju stvarnih proizvoda.',
+    contact: 'Imate ideju za proizvod, interaktivni sistem ili tehnološko iskustvo? Razgovarajte sa Dev Studio timom o razvoju i realizaciji projekta.',
+  } : {
+    capabilities: 'Design, mechanics, electronics, software, prototyping and manufacturing in one team—from the first idea to installation and support.',
+    about: 'Dev Studio is an integrated product and technology studio in Banja Luka combining design, engineering, electronics, software and manufacturing.',
+    contact: 'Have an idea for a product, interactive system or technology experience? Talk to Dev Studio about developing and bringing your project to life.',
   }
-  const path = `/${page}`
-  return { title: `${labels[page]} — Dev Studio`, description: descriptions[page], alternates: { canonical: localizedHref(path, locale), languages: languageAlternates(path) } }
+  const title = titles[page]
+  const description = descriptions[page]
+  const canonical = localizedHref(`/${page}`, locale)
+  const settings = await getSiteSettings(locale)
+  return {
+    title, description, alternates: { canonical, languages: languageAlternates(`/${page}`) },
+    ...socialMetadata({ title, description, url: canonical, locale, image: metadataImage(settings.seo?.shareImage) }),
+  }
 }
 
 const capabilities = [

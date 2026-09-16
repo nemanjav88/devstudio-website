@@ -4,6 +4,8 @@ import type { Download, Project, Solution, Story } from '@/payload-types'
 import { coverMedia, description, pageNumber, populated, type EditorialCollection, type SearchParams, type Section } from '@/lib/content'
 import { findAllSolutions, findAllStories, findDownloads, findEditorial, getDetail, getRelated } from '@/lib/content-data'
 import { languageAlternates, localizedHref, type Locale } from '@/lib/i18n'
+import { getSiteSettings } from '@/lib/cms'
+import { metadataImage, socialMetadata } from '@/lib/seo'
 import { publicSolutionGroups } from '@/lib/public-solution-groups'
 import { sectionCopy, ui } from '@/lib/section-copy'
 import { ContentShell } from './ContentShell'
@@ -12,12 +14,34 @@ import { DownloadList, EditorialList, EmptyState, Pagination } from './ContentLi
 import { EditorialText } from './EditorialText'
 import { ContentGallery } from './ContentGallery'
 
+type IndexSeo = { title: string; description: string }
+
+function indexSeo(section: Section, locale: Locale): IndexSeo | undefined {
+  if (section === 'solutions') return locale === 'bhs'
+    ? { title: 'Retail tehnologija i interaktivni sistemi | Dev Studio', description: 'Razvijamo retail tehnologiju, brend iskustva, custom proizvode i interaktivne sisteme — od koncepta do gotovog rješenja.' }
+    : { title: 'Retail Technology & Interactive Systems | Dev Studio', description: 'We develop retail technology, brand experiences, custom products and interactive systems—from concept to finished solution.' }
+  if (section === 'stories') return locale === 'bhs'
+    ? { title: 'Priče, projekti i tehnologija | Dev Studio', description: 'Pogled iza razvoja proizvoda, tehnologije i proizvodnje u Dev Studiju: projekti, studije slučaja, novosti i proces izrade.' }
+    : { title: 'Stories, Projects & Technology | Dev Studio', description: 'A look behind Dev Studio’s product development, technology and manufacturing work: projects, case studies, news and the making process.' }
+  if (section === 'resources') return locale === 'bhs'
+    ? { title: 'Katalozi i resursi | Dev Studio', description: 'Preuzmite Dev Studio kataloge, informacije o proizvodima, flajere i tematske brošure na BHS i engleskom jeziku.' }
+    : { title: 'Catalogs & Resources | Dev Studio', description: 'Download Dev Studio catalogs, product information, flyers and thematic brochures in BHS and English.' }
+  return undefined
+}
+
 export async function indexMetadata(section: Section, locale: Locale, searchParams?: Promise<SearchParams>): Promise<Metadata> {
   const copy = sectionCopy(locale, section)
   const page = pageNumber((await searchParams)?.page)
   const path = `/${section}${page > 1 && section !== 'resources' && section !== 'solutions' && section !== 'stories' ? `?page=${page}` : ''}`
-  return { title: `${copy.label} — Dev Studio`, description: copy.intro,
-    alternates: { canonical: localizedHref(path, locale), languages: languageAlternates(path) } }
+  const seo = indexSeo(section, locale)
+  const title = seo?.title || `${copy.label} — Dev Studio`
+  const seoDescription = seo?.description || copy.intro
+  const canonical = localizedHref(path, locale)
+  const settings = seo ? await getSiteSettings(locale) : undefined
+  return {
+    title, description: seoDescription, alternates: { canonical, languages: languageAlternates(path) },
+    ...(seo ? socialMetadata({ title, description: seoDescription, url: canonical, locale, image: metadataImage(settings?.seo?.shareImage) }) : {}),
+  }
 }
 
 export async function detailMetadata(collection: EditorialCollection, locale: Locale, slug: string): Promise<Metadata> {
@@ -26,8 +50,20 @@ export async function detailMetadata(collection: EditorialCollection, locale: Lo
     if (!result.unavailable) notFound()
     return { title: `${ui(locale).unavailable} — Dev Studio` }
   }
-  return { title: `${result.doc.title} — Dev Studio`, description: description(result.doc),
-    alternates: { canonical: result.translatedPaths[locale], languages: result.languages } }
+  const canonical = result.translatedPaths[locale]
+  const detailDescription = description(result.doc)
+  if (collection === 'projects') return {
+    title: `${result.doc.title} — Dev Studio`, description: detailDescription,
+    alternates: { canonical, languages: result.languages },
+  }
+  const title = `${result.doc.title} | Dev Studio`
+  const settings = await getSiteSettings(locale)
+  const image = metadataImage(coverMedia(result.doc)) || metadataImage(settings.seo?.shareImage)
+  return {
+    title, ...(detailDescription ? { description: detailDescription } : {}),
+    alternates: { canonical, languages: result.languages },
+    ...socialMetadata({ title, description: detailDescription, url: canonical!, locale, image }),
+  }
 }
 
 function SectionIntro({ section, locale }: { section: Section; locale: Locale }) {
