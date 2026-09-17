@@ -13,6 +13,7 @@ import { ContentMedia, ContentVideo, Gallery } from './ContentMedia'
 import { DownloadList, EditorialList, EmptyState, Pagination } from './ContentLists'
 import { EditorialText } from './EditorialText'
 import { ContentGallery } from './ContentGallery'
+import { breadcrumbStructuredData, StructuredDataScript } from '@/components/seo/StructuredData'
 
 type IndexSeo = { title: string; description: string }
 
@@ -140,7 +141,11 @@ export async function DetailPage({ collection, locale, slug }: { collection: Edi
   const media = coverMedia(doc)
   const labels = ui(locale)
   const category = collection === 'solutions' ? labels[(doc as Solution).solutionGroup] : collection === 'stories' ? labels[(doc as Story).type] : labels.project
+  const breadcrumbs = collection === 'solutions' || collection === 'stories'
+    ? breadcrumbStructuredData({ locale, section: collection, title: doc.title, path: result.translatedPaths[locale]! })
+    : undefined
   return <ContentShell locale={locale} translatedPaths={result.translatedPaths} detail>
+    {breadcrumbs && <StructuredDataScript data={breadcrumbs} />}
     <article className={`content-detail content-detail--${collection}`}>
       <header className="detail-intro content-pad">
         <a className="text-link detail-back" href={localizedHref(`/${collection}`, locale)}>← {labels.back} {sectionCopy(locale, collection).label}</a>
