@@ -275,6 +275,16 @@ export interface Solution {
   slug: string;
   solutionGroup: 'digital-retail' | 'brand-experiences' | 'entertainment' | 'custom-engineering' | 'production';
   shortDescription?: string | null;
+  seo?: {
+    /**
+     * Optional search title. Do not include '| Dev Studio'; the brand suffix is added automatically.
+     */
+    title?: string | null;
+    /**
+     * Optional search description. Falls back to Short Description when empty.
+     */
+    description?: string | null;
+  };
   content?: {
     root: {
       type: string;
@@ -599,6 +609,12 @@ export interface SolutionsSelect<T extends boolean = true> {
   slug?: T;
   solutionGroup?: T;
   shortDescription?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
   content?: T;
   heroMedia?: T;
   gallery?:

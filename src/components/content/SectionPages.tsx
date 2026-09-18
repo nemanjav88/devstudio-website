@@ -52,12 +52,13 @@ export async function detailMetadata(collection: EditorialCollection, locale: Lo
     return { title: `${ui(locale).unavailable} — Dev Studio` }
   }
   const canonical = result.translatedPaths[locale]
-  const detailDescription = description(result.doc)
+  const solution = collection === 'solutions' ? result.doc as Solution : undefined
+  const detailDescription = solution?.seo?.description?.trim() || description(result.doc)
   if (collection === 'projects') return {
     title: `${result.doc.title} — Dev Studio`, description: detailDescription,
     alternates: { canonical, languages: result.languages },
   }
-  const title = `${result.doc.title} | Dev Studio`
+  const title = `${solution?.seo?.title?.trim() || result.doc.title} | Dev Studio`
   const settings = await getSiteSettings(locale)
   const image = metadataImage(coverMedia(result.doc)) || metadataImage(settings.seo?.shareImage)
   return {

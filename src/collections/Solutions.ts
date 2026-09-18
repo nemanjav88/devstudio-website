@@ -17,6 +17,31 @@ export const Solutions: CollectionConfig = {
       { label: 'Production', value: 'production' },
     ] },
     { name: 'shortDescription', type: 'textarea', localized: true },
+    {
+      name: 'seo',
+      label: 'SEO',
+      type: 'group',
+      fields: [
+        {
+          name: 'title',
+          label: 'SEO title',
+          type: 'text',
+          localized: true,
+          admin: {
+            description: "Optional search title. Do not include '| Dev Studio'; the brand suffix is added automatically.",
+          },
+        },
+        {
+          name: 'description',
+          label: 'SEO description',
+          type: 'textarea',
+          localized: true,
+          admin: {
+            description: 'Optional search description. Falls back to Short Description when empty.',
+          },
+        },
+      ],
+    },
     content(),
     { name: 'heroMedia', type: 'upload', relationTo: 'media' },
     gallery(),
